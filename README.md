@@ -1,0 +1,4 @@
+collective
+==========
+
+The new collective
