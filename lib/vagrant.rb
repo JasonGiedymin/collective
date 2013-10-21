@@ -128,10 +128,11 @@ namespace :vm do
         desc 'Power up cluster'
         task :up do
           cluster_nodes.each do |os|
-            puts "\npowering #{os}..."
+            puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] =="
             Rake::Task["vm:#{os}:up"].invoke
             Rake::Task["vm:#{os}:provision"].invoke # for good measure
             Rake::Task["vm:#{os}:reboot"].invoke # for good measure
+            puts "\n== Cluster:[#{cluster_name}] up and running =="
           end
         end
 

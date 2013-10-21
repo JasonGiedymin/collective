@@ -25,10 +25,13 @@ Vagrant.configure('2') do |config|
  
     _primary = (default_vm == node['hostname'])
     config.vm.define node['hostname'], primary: _primary do |instance|
-      instance.vm.box = "#{version}-#{node['box']}"
+      box_name = "#{version}-#{node['box']}"
+      instance.vm.box = box_name
       instance.vm.box_url = "#{box_loc}/#{node['url']}"
       instance.vm.host_name = node['hostname']# + '.' + domain
       instance.vm.network "private_network", ip: node['ip'], :mac => node['mac'], :adapter => 2
+
+      instance.vm.provision :shell, inline: "echo '#{box_name}' started...'"
     end # end define
 
     # config.vm.network "public_network", :bridge => 'en0: Wi-Fi (AirPort)', :mac => node['mac']#, :adapter => 3
