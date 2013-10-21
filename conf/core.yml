@@ -1,0 +1,62 @@
+defaults: # default config
+  version: 'collective-v0.0.1'
+  vm: 'dev'
+  cluster: 'base'
+  ui: false
+
+
+locations:
+  base_boxes: './base_boxes'
+
+
+clusters: # cluster config
+  - cluster:
+      name: 'base'
+      nodes: 
+        - 'dev'
+        - 'broker'
+
+
+nodes:  # node registry
+  - node:
+      hostname: 'dev'
+      box: 'dev'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.09'
+      mac: 0800d2FF88F2
+      url: 'ubuntu_13_04_lts.box'
+  - node:
+      hostname: 'ci'
+      box: 'ci'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.10'
+      mac: '080027EB6B03'
+      url: 'ubuntu_13_04_lts.box'
+  - node:
+      hostname: 'broker'
+      box: 'broker'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.11'
+      mac: '080027BE8715'
+      url: 'ubuntu_13_04_lts.box'
+  - node:
+      hostname: 'node-1'
+      box: 'node-1'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.12'
+      mac: '02EECB9EC1ED'
+      url: 'ubuntu_13_04_lts.box'
+
+# Unused macs:
+#   02895C872CC5
+#   02D7DAEB3F8C
+#   024E89B94036
+#   0253943912A9
+#   0277E25CD585
+#   025EDFE84F7F
+#   02882CFDC8F
+#   0269347FC4C6
