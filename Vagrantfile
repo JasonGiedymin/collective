@@ -13,6 +13,8 @@
 #
 #
 
+version = 'collective-v0.0.2'
+
 nodes = [
   { :hostname => 'ci',     :box => 'ci',     :cpus => 1, :mem => 256, :ip => '10.10.10.01', :mac => '0800d2FF88F2', :url => 'base_boxes/ubuntu_13_04_lts.box' },
   { :hostname => 'dev',    :box => 'dev',    :cpus => 1, :mem => 256, :ip => '10.10.10.02', :mac => '080027EB6B03', :url => 'base_boxes/ubuntu_13_04_lts.box' },
@@ -44,7 +46,7 @@ Vagrant.configure('2') do |config|
     end
  
     config.vm.define node[:hostname] do |instance|
-      instance.vm.box = node[:box]
+      instance.vm.box = "#{version}-#{node[:box]}"
       instance.vm.box_url = node[:url]
       instance.vm.host_name = node[:hostname]# + '.' + domain
       instance.vm.network 'private_network', ip: node[:ip]
