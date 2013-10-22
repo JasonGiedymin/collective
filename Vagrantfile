@@ -13,13 +13,15 @@
 #
 #
 
+HOME = File.dirname(__FILE__)
+
 version = 'collective-v0.0.2'
 
 nodes = [
-  { :hostname => 'ci',     :box => 'ci',     :cpus => 1, :mem => 256, :ip => '10.10.10.01', :mac => '0800d2FF88F2', :url => 'base_boxes/ubuntu_13_04_lts.box' },
-  { :hostname => 'dev',    :box => 'dev',    :cpus => 1, :mem => 256, :ip => '10.10.10.02', :mac => '080027EB6B03', :url => 'base_boxes/ubuntu_13_04_lts.box' },
-  { :hostname => 'broker', :box => 'broker', :cpus => 1, :mem => 256, :ip => '10.10.20.01', :mac => '080027BE8715', :url => 'base_boxes/ubuntu_13_04_lts.box' },
-  { :hostname => 'node-1', :box => 'node-1', :cpus => 1, :mem => 256, :ip => '10.10.20.02', :mac => '02EECB9EC1ED', :url => 'base_boxes/ubuntu_13_04_lts.box' }
+  { :hostname => 'ci',     :box => 'ci',     :cpus => 1, :mem => 256, :ip => '10.10.10.10', :mac => '0800d2FF88F2', :url => 'base_boxes/ubuntu_13_04_lts.box' },
+  { :hostname => 'dev',    :box => 'dev',    :cpus => 1, :mem => 256, :ip => '10.10.10.11', :mac => '080027EB6B03', :url => 'base_boxes/ubuntu_13_04_lts.box' },
+  { :hostname => 'node-1', :box => 'node-1', :cpus => 1, :mem => 256, :ip => '10.10.10.12', :mac => '080027BE8715', :url => 'base_boxes/ubuntu_13_04_lts.box' },
+  { :hostname => 'node-2', :box => 'node-2', :cpus => 1, :mem => 256, :ip => '10.10.10.13', :mac => '02EECB9EC1ED', :url => 'base_boxes/ubuntu_13_04_lts.box' }
 ]
 
 #
@@ -37,6 +39,14 @@ nodes = [
 Vagrant.configure('2') do |config|
   nodes.each do |node|
  
+ 
+    config.vm.define node[:hostname] do |instance|
+      instance.vm.box = "#{version}-#{node[:box]}"
+      instance.vm.box_url = node[:url]
+      instance.vm.host_name = node[:hostname]# + '.' + domain
+      instance.vm.network 'private_network', :mac => node[:mac], ip: node[:ip]
+    end # end define
+
     config.vm.provider "virtualbox" do |vb|
       vb.customize ['modifyvm', :id, '--memory', node[:mem]]
       vb.customize ['modifyvm', :id, '--cpus', node[:cpus]]
@@ -44,12 +54,7 @@ Vagrant.configure('2') do |config|
       # do not change
       vb.customize ['modifyvm', :id, '--hwvirtex', 'on']
     end
- 
-    config.vm.define node[:hostname] do |instance|
-      instance.vm.box = "#{version}-#{node[:box]}"
-      instance.vm.box_url = node[:url]
-      instance.vm.host_name = node[:hostname]# + '.' + domain
-      instance.vm.network 'private_network', ip: node[:ip]
-    end # end define
+
+    config.vm.synced_folder "manifests", "/home/vagrant/manifests"
   end # end nodes
 end

@@ -1,5 +1,4 @@
 
-
 VagrantCommand = Struct.new(:task, :desc, :cmd, :fire_forget)
 
 # Simple custom commands here
