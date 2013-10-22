@@ -14,18 +14,10 @@ clusters: # cluster config
       name: 'base'
       nodes: 
         - 'dev'
-        - 'broker'
+
 
 
 nodes:  # node registry
-  - node:
-      hostname: 'dev'
-      box: 'dev'
-      cpus: 1
-      mem: 256
-      ip: '10.10.10.09'
-      mac: 0800d2FF88F2
-      url: 'ubuntu_13_04_lts.box'
   - node:
       hostname: 'ci'
       box: 'ci'
@@ -34,22 +26,34 @@ nodes:  # node registry
       ip: '10.10.10.10'
       mac: '080027EB6B03'
       url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
   - node:
-      hostname: 'broker'
-      box: 'broker'
+      hostname: 'dev'
+      box: 'dev'
       cpus: 1
       mem: 256
       ip: '10.10.10.11'
-      mac: '080027BE8715'
+      mac: 0800d2FF88F2
       url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
   - node:
-      hostname: 'node-1'
-      box: 'node-1'
+      hostname: 'node1'
+      box: 'node1'
       cpus: 1
       mem: 256
       ip: '10.10.10.12'
+      mac: '080027BE8715'
+      url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
+  - node:
+      hostname: 'node2'
+      box: 'node2'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
       url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
 
 # Unused macs:
 #   02895C872CC5

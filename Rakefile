@@ -1,6 +1,6 @@
-
+import 'lib/conf.rb'
 import 'lib/system.rb'
-import 'lib/git.rb'
+import 'lib/vagrant.rb'
 
 # Immediately sync all stdout so that tools like buildbot can
 # immediately load in the output.

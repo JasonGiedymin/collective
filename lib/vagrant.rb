@@ -1,3 +1,4 @@
+require 'colorize'
 
 VagrantCommand = Struct.new(:task, :desc, :cmd, :fire_forget)
 
@@ -20,7 +21,7 @@ def vm_cmd(os, cmd, fire_forget=false)
 
   if (!fire_forget)
     if system vagrant_cmd
-      puts "-> Vagrant command ran: [#{vagrant_cmd}]\n\n"
+      puts "  Vagrant command ran: [#{vagrant_cmd}]\n\n"
     else
         raise "\n!!!\n   Error trying to run vagrant command [#{vagrant_cmd}]\n!!!\n\n"
     end
@@ -45,6 +46,7 @@ namespace :vm do
 
         desc "#{command.desc} #{os}"
         task command.task do |t|
+          puts "-> running command:[#{command.task}] on node:[#{os}]".underline
           vm_cmd(os, command.cmd, command.fire_forget)
         end # end dynamic task
 
@@ -101,12 +103,16 @@ namespace :vm do
   task :rebirth do
     Rake::Task["vm:destroy"].invoke
     Rake::Task["vm:cleanup"].invoke
+    puts "sleeping to let host system catchup"
+    sleep(5)
     Rake::Task["vm:up"].invoke
   end
 
   desc 'Reboots a vm'
   task :reboot do
     Rake::Task["vm:halt"].invoke
+    puts "sleeping to let host system catchup"
+    sleep(5)
     Rake::Task["vm:up"].invoke
   end
 
@@ -119,43 +125,56 @@ namespace :vm do
         desc 'Halt or shutdown cluster'
         task :halt do
           cluster_nodes.each do |os|
-            puts "\nhalting #{os}..."
+            puts "\n== Powering down cluster:[#{cluster_name}], node:[#{os}] ==".light_red
             Rake::Task["vm:#{os}:halt"].invoke
+            puts "\n== Cluster:[#{cluster_name}] down ==".black.on_light_red
           end
         end
 
         desc 'Power up cluster'
         task :up do
           cluster_nodes.each do |os|
-            puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] =="
+            puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] ==".green
             Rake::Task["vm:#{os}:up"].invoke
-            Rake::Task["vm:#{os}:provision"].invoke # for good measure
-            Rake::Task["vm:#{os}:reboot"].invoke # for good measure
-            puts "\n== Cluster:[#{cluster_name}] up and running =="
+            # Rake::Task["vm:#{os}:provision"].invoke # for good measure
+            #Rake::Task["vm:#{os}:reboot"].invoke # for good measure
+            puts "\n== Cluster:[#{cluster_name}] up and running ==".black.on_green
+          end
+        end
+
+        desc 'Re-provisions a cluster'
+        task :provision do
+          cluster_nodes.each do |os|
+            puts "\n== Provisioning cluster:[#{cluster_name}], node:[#{os}] ==".cyan
+            Rake::Task["vm:#{os}:provision"].invoke
+            puts "\n== Provisioning Cluster:[#{cluster_name}] complete ==".black.on_cyan
           end
         end
 
         desc 'Rebirth an entire cluster'
         task :rebirth do
           cluster_nodes.each do |os|
-            puts "\nrebirth-ing #{os}..."
+            puts "\n== Rebirthing cluster:[#{cluster_name}], node:[#{os}] ==".light_blue
             Rake::Task["vm:#{os}:rebirth"].invoke
           end
+          puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
         end
 
         desc 'Destroys an entire cluster'
         task :destroy do
           cluster_nodes.each do |os|
-            puts "\ndestroying #{os}..."
+            puts "\n== Destroying cluster:[#{cluster_name}]".red
             Rake::Task["vm:#{os}:destroy"].invoke
+            puts "\n== Cluster:[#{cluster_name}] destroyed".white.on_red
           end
         end
 
         desc 'Reboots an entire cluster'
         task :reboot do
           cluster_nodes.each do |os|
-            puts "\nrebooting #{os}..."
+            puts "\n== Rebooting cluster:[#{cluster_name}]".light_yellow
             Rake::Task["vm:#{os}:reboot"].invoke
+            puts "\n== Cluster:[#{cluster_name}] rebooted".black.on_light_yellow
           end
         end
       end
