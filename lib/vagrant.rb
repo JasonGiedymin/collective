@@ -80,7 +80,9 @@ namespace :vm do
     os=default_vm
     desc "#{command.desc} #{os}"
     task command.task do |t|
+      puts "-> running command:[#{command.task}] on node:[#{os}]".underline
       vm_cmd(os, command.cmd, command.fire_forget)
+      puts "\n== command:[#{command.task}] on node:[#{os}] complete ==".black.on_magenta
     end # end default vm task
   end # end default command each
 
@@ -88,7 +90,7 @@ namespace :vm do
   desc 'Cleanup up latest holobot box'
   task :cleanup do
     Rake::Task["vm:destroy"].invoke
-    vm_cmd('virtualbox', "box remove #{version}-#{default_vm}")
+    vm_cmd('virtualbox', "box remove #{version}-#{default_vm}", true)
   end
 
   desc 'Cleanup all boxes'

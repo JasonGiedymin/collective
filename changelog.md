@@ -1,5 +1,10 @@
 # Changelog
 
+* v0.0.5
+  - Add extra terminal logging when using raw `vm:<command>` execution paths
+  - Fix version so that it reads from `core.yml`
+  - Fix raw `vm:destroy` to fire and forget the command (sometimes no box can be found to be removed)
+
 * v0.0.4
   - Fix vagrant 'randomness' issues from not nesting all calls
   - Bring back all libs

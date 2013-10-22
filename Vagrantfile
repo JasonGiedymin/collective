@@ -8,8 +8,6 @@ default_vm = Global::Settings.defaults['vm']
 clusters = Global::Settings.clusters
 box_loc = Global::Settings.locations['base_boxes']
 
-version = 'collective-v0.0.4'
-
 
 Vagrant.configure('2') do |config|
 
