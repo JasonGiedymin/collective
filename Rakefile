@@ -12,15 +12,15 @@ Dir.chdir(File.expand_path("../", __FILE__))
 HOME = File.dirname(__FILE__)
 
 Repo = Struct.new(:name, :url, :tag, :location, :postinstall)
-REPOS = [
+repos = [
   # Disabled tracking vagrant for now, make sure to stick with v1.2.7
   # you may have to do gem uninstall vagrant
   # Utility.new('vagrant', 'https://github.com/mitchellh/vagrant.git', 'v1.2.7', 'gem uninstall -a vagrant && rake install')
   Repo.new( 
-    'origin', 
-    'https://github.com/JasonGiedymin/puppet-openshift_origin.git', 
-    'v2.0',
-    'manifests/',
+    'devstack', 
+    'https://github.com/openstack-dev/devstack.git', 
+    '',
+    "#{HOME}/manifests",
     'echo "Obtained private origin release v2.0"')
 ]
 
@@ -32,7 +32,7 @@ end
 namespace :download do
   desc "download repos"
   task :repos do
-    Git.cloneRepos
+    Git.cloneRepos(repos)
   end
 end
 
