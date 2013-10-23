@@ -48,14 +48,20 @@ namespace :vm do
         task command.task do |t|
           puts "-> running command:[#{command.task}] on node:[#{os}]".underline
           vm_cmd(os, command.cmd, command.fire_forget)
+          puts "\n== command:[#{command.task}] on node:[#{os}] complete ==".black.on_magenta
+
+          if(command.task == 'destroy')
+            Rake::Task["vm:#{os}:cleanup"].invoke
+          end
         end # end dynamic task
 
       end # end command each
 
       desc "Removes #{version}-#{os} from vagrant."
       task :cleanup do
-        Rake::Task["vm:destroy"].invoke
+        puts "-> running command:[cleanup] on node:[#{os}]".underline
         vm_cmd('virtualbox', "box remove #{version}-#{os}", true)
+        puts "\n== command:[cleanup] on node:[#{os}] complete ==".black.on_magenta
       end
 
       desc 'Rebirth does a force destroy followed by an up'
@@ -80,25 +86,36 @@ namespace :vm do
     os=default_vm
     desc "#{command.desc} #{os}"
     task command.task do |t|
-      puts "-> running command:[#{command.task}] on node:[#{os}]".underline
-      vm_cmd(os, command.cmd, command.fire_forget)
-      puts "\n== command:[#{command.task}] on node:[#{os}] complete ==".black.on_magenta
+      # puts "-> running command:[#{command.task}] on node:[#{os}]".underline
+      # vm_cmd(os, command.cmd, command.fire_forget)
+      # puts "\n== command:[#{command.task}] on node:[#{os}] complete ==".black.on_magenta
+      
+      # if(command.task == 'destroy')
+      #   Rake::Task["vm:cleanup"].invoke
+      # end
+
+      # legacy manual impl above, kept for posperity
+      Rake::Task["vm:#{os}:#{command.task}"].invoke
+
     end # end default vm task
   end # end default command each
 
 
-  desc 'Cleanup up latest holobot box'
+  desc 'Cleanup up latest box'
   task :cleanup do
-    Rake::Task["vm:destroy"].invoke
     vm_cmd('virtualbox', "box remove #{version}-#{default_vm}", true)
+    puts "== command:[cleanup] on node:[#{default_vm}] complete ==\n".black.on_magenta
   end
 
-  desc 'Cleanup all boxes'
+  desc 'Cleanup ALL nodes'
   task :cleanupall do
-    SUPPORTED_OS.each do |os|
-      puts "\ndestroying #{os}..."
-      Rake::Task["vm:#{os}:destroy"].invoke
+    SUPPORTED_NODES.each do |entry|
+      os = entry['node']['hostname']
+      # puts "\ncleaning up #{os}...".underline
+      # vm_cmd('virtualbox', "box remove #{version}-#{os}", true)
+      Rake::Task["vm:#{os}:cleanup"].invoke
     end
+    puts "\n== cleanup on all nodes complete ==".black.on_light_magenta
   end
   
   desc 'Rebirth does a force destroy followed by an up'
@@ -162,11 +179,12 @@ namespace :vm do
           puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
         end
 
-        desc 'Destroys an entire cluster'
+        desc 'Destroys an entire cluster and cleans up'
         task :destroy do
           cluster_nodes.each do |os|
             puts "\n== Destroying cluster:[#{cluster_name}]".red
             Rake::Task["vm:#{os}:destroy"].invoke
+            Rake::Task["vm:#{os}:cleanup"].invoke
             puts "\n== Cluster:[#{cluster_name}] destroyed".white.on_red
           end
         end
