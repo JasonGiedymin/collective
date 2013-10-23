@@ -1,5 +1,13 @@
 # Changelog
 
+* v0.0.6
+  - Add locale to dev init
+  - Add apt-get update/autoclean/remove to init
+  - Add 2G to mem limit on dev box
+  - Fix various commands to properly lot output
+  - Fix cleanup to properly clean up when doing `vm:destroy` or `vm:cleanup`
+  - Fix destroy to run cleanup after (found when modifying base OS)
+
 * v0.0.5
   - Add extra terminal logging when using raw `vm:<command>` execution paths
   - Fix version so that it reads from `core.yml`

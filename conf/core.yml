@@ -1,5 +1,5 @@
 defaults: # default config
-  version: 'collective-v0.0.5'
+  version: 'collective-v0.0.6'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -14,8 +14,7 @@ clusters: # cluster config
       name: 'base'
       nodes: 
         - 'dev'
-
-
+        
 
 nodes:  # node registry
   - node:
@@ -31,7 +30,7 @@ nodes:  # node registry
       hostname: 'dev'
       box: 'dev'
       cpus: 1
-      mem: 256
+      mem: 2048
       ip: '10.10.10.11'
       mac: 0800d2FF88F2
       url: 'ubuntu_13_04_lts.box'
