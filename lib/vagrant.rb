@@ -146,8 +146,8 @@ namespace :vm do
           cluster_nodes.each do |os|
             puts "\n== Powering down cluster:[#{cluster_name}], node:[#{os}] ==".light_red
             Rake::Task["vm:#{os}:halt"].invoke
-            puts "\n== Cluster:[#{cluster_name}] down ==".black.on_light_red
           end
+          puts "\n== Cluster:[#{cluster_name}] down ==".black.on_light_red
         end
 
         desc 'Power up cluster'
