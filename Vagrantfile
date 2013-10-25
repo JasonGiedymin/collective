@@ -7,7 +7,7 @@ version = Global::Settings.defaults['version']
 default_vm = Global::Settings.defaults['vm']
 clusters = Global::Settings.clusters
 box_loc = Global::Settings.locations['base_boxes']
-
+init_script_loc = Global::Settings.locations['init_scripts']
 
 Vagrant.configure('2') do |config|
 
@@ -33,7 +33,7 @@ Vagrant.configure('2') do |config|
         vb.gui = node['ui']
       end
 
-      instance.vm.provision :shell, path: "./manifests/#{node['hostname']}/#{node['init']}"
+      instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"
     end # end define
     
   end # end nodes
