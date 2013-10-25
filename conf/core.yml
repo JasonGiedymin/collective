@@ -41,7 +41,7 @@ nodes:  # node registry
       mem: 256
       ip: '10.10.10.10'
       mac: '080027EB6B03'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
   - node:
       hostname: 'dev'

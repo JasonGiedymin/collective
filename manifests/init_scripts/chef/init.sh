@@ -10,5 +10,13 @@ sudo apt-get autoremove
 
 # Install Chef
 # echo "Installing Chef Server"
-# sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
-# sudo chef-server-ctl reconfigure
+sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
+sudo chef-server-ctl reconfigure
+sudo chef-server-ctl test -all
+
+echo
+echo "If Installation was successful Chef server should be accessible via:"
+echo "    url:  https://10.10.10.10/"
+echo "    user: admin"
+echo "    pass: p@ssw0rd1"
+echo

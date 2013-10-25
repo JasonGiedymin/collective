@@ -1,6 +1,7 @@
 # Changelog
 
 * v0.0.7
+  - Add open source chef server to close #10 (using Ubuntu 12.04)
   - Add chef box
   - Add chef download
   - Add `download:files` task
@@ -9,7 +10,8 @@
   - Add `locations/downloads` directory location for misc downloads
   - Add `locations/repos` directory location for repos
   - Moved repos to core.yml
-  - Add start of script to install chef server
+  - Add init script for chef server
+  - Add additional comments and terminal logging
 
 * v0.0.6
   - Add locale to dev init
