@@ -1,8 +1,15 @@
 downloads:
   files:
     - file:
+      name: 'ubuntu_12_04_lts.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
+      location: 'base_boxes'
+      track: false
+    - file:
       name: 'chefserver.deb'
       url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
+      location: 'downloads'
+      track: false
 
 repos:
   - repo:

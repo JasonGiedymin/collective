@@ -15,23 +15,37 @@ namespace :download do
 
   desc "download files"
   task :files do
-    download_loc = Global::Settings.locations['downloads']
     downloads = Global::Settings.downloads
-
-    # check if location exists create otherwise
-    Dir.mkdir(download_loc) unless Dir.exists?(download_loc)
-
     files = downloads['files']
+
     files.each do |file|
       name = file['name']
       url = file['url']
-      puts "-> Downloading file: [#{url}]".light_blue
-      System.shell_cmd(
-        "./",
-        "curl #{url} > #{download_loc}/#{name}",
-        "Download file #{name} to [#{download_loc}/#{name}]"
-      )
+      track = file['track']
+      location = file['location']
+
+      download_loc = Global::Settings.locations[location]
+      full_loc = "#{download_loc}/#{name}"
+
+      # check if location exists create otherwise
+      Dir.mkdir(download_loc) unless Dir.exists?(download_loc)
+
+      if track
+        puts "-> Tracking #{full_loc}...".light_yellow
+        FileUtils.rm_rf "#{full_loc}" 
+      end
+
+      if !File.exists?(full_loc)
+        puts "-> Downloading file: [#{url}] as [#{name}]".light_blue
+
+        System.shell_cmd(
+          "./",
+          "curl #{url} > #{full_loc}",
+          "Download file #{name} to [#{full_loc}]"
+        )
+      end
     end
+
     puts "\n== Downloads complete ==".white.on_light_blue
   end
 end
