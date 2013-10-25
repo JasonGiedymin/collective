@@ -4,7 +4,7 @@ require 'yaml'
 
 # Meta Nodes
 module Nodes # for object access
-  Keys = ['defaults', 'locations', 'clusters', 'nodes']
+  Keys = ['downloads', 'repos', 'defaults', 'locations', 'clusters', 'nodes']
 end
 
 # Config Class

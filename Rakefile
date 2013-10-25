@@ -1,6 +1,10 @@
 import 'lib/conf.rb'
 import 'lib/system.rb'
 import 'lib/vagrant.rb'
+import 'lib/git.rb'
+import 'lib/downloads.rb'
+
+require 'colorize'
 
 # Immediately sync all stdout so that tools like buildbot can
 # immediately load in the output.
@@ -11,29 +15,10 @@ Dir.chdir(File.expand_path("../", __FILE__))
 
 HOME = File.dirname(__FILE__)
 
-Repo = Struct.new(:name, :url, :tag, :location, :postinstall)
-repos = [
-  # Disabled tracking vagrant for now, make sure to stick with v1.2.7
-  # you may have to do gem uninstall vagrant
-  # Utility.new('vagrant', 'https://github.com/mitchellh/vagrant.git', 'v1.2.7', 'gem uninstall -a vagrant && rake install')
-  Repo.new( 
-    'devstack', 
-    'https://github.com/openstack-dev/devstack.git', 
-    '',
-    "#{HOME}/manifests",
-    'echo "Obtained private origin release v2.0"')
-]
 
 ## Tasks
 task :default do
   Rake::Task["help:examples"].invoke
-end
-
-namespace :download do
-  desc "download repos"
-  task :repos do
-    Git.cloneRepos(repos)
-  end
 end
 
 namespace :check do
