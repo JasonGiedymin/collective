@@ -1,3 +1,10 @@
+locations:
+  base_boxes: './base_boxes'
+  init_scripts: './manifests/init_scripts'
+  downloads: './manifests/downloads'
+  repos: './manifests/repos'
+
+
 downloads:
   files:
     - file:
@@ -11,12 +18,14 @@ downloads:
       location: 'downloads'
       track: false
 
+
 repos:
   - repo:
     name: 'devstack'
     url: 'https://github.com/openstack-dev/devstack.git'
     tag: ''
     post_install: ''
+
 
 defaults: # default config
   version: 'collective-v0.0.8'
@@ -25,19 +34,12 @@ defaults: # default config
   ui: false
 
 
-locations:
-  base_boxes: './base_boxes'
-  init_scripts: './manifests/init_scripts'
-  downloads: './manifests/downloads'
-  repos: './manifests/repos'
-
-
 clusters: # cluster config
   - cluster:
       name: 'base'
       nodes: 
-        - 'chef'
-        - 'dev'
+        - 'node1' # nodes first
+        - 'chef' # chef last as it will then knife across nodes
         
 
 nodes:  # node registry
@@ -77,6 +79,7 @@ nodes:  # node registry
       mac: '02EECB9EC1ED'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
+
 
 # Unused macs:
 #   02895C872CC5

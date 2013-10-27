@@ -6,6 +6,16 @@
   - Add `location` node to `downloads`, which is a key defined in `locations`
   - Add `track` node to `downloads`, which will track the external resource
   - Add functionality to track downloads
+  - Add `version` info to chef init script
+  - Add `init_scripts/chef/files/.chef` resources to bootstrap chef server in cluster
+  - Add global init script
+  - Add SSHd config script
+  - Add script to setup chef server
+  - Add `node1` vm (activated via `vm:node1:up`)
+  - Add `node1` vm to cluster `base` (activated via `vm:cluster:base:up`)
+  - Add `init_scripts/chef/deploy_chef.sh` for deploying chef server
+  - Add `init_scripts/chef/setup_chef.sh` for setting up chef server
+  - Add `init_scripts/lib_functions.sh` for global functions
 
 * v0.0.7
   - Add open source chef server to close #10 (using Ubuntu 12.04)
