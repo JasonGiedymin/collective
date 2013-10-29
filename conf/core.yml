@@ -4,7 +4,7 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.8'
+  version: 'collective-v0.0.9'
   vm: 'dev'
   cluster: 'base'
   ui: false

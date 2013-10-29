@@ -1,5 +1,8 @@
 # Changelog
 
+* v0.0.9
+  - 
+
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host
   - Add `vboxload.sh` to reload network drivers, fixes #13 (current Mavericks + vbox bug)
