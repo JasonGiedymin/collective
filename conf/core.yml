@@ -1,22 +1,19 @@
-downloads:
-  files:
-    - file:
-      name: 'chefserver.deb'
-      url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
-
-repos:
-  - repo:
-    name: 'devstack'
-    url: 'https://github.com/openstack-dev/devstack.git'
-    tag: ''
-    post_install: ''
+#
+# Default Settings
+# ================
+#
 
 defaults: # default config
-  version: 'collective-v0.0.7'
+  version: 'collective-v0.0.8'
   vm: 'dev'
   cluster: 'base'
   ui: false
 
+
+#
+# Location Settings
+# ================
+#
 
 locations:
   base_boxes: './base_boxes'
@@ -25,13 +22,55 @@ locations:
   repos: './manifests/repos'
 
 
+#
+# Download Settings
+# ================
+#
+
+downloads:
+  files:
+    - file:
+      name: 'ubuntu_12_04_lts.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
+      location: 'base_boxes'
+      track: false
+    - file:
+      name: 'chefserver.deb'
+      url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
+      location: 'downloads'
+      track: false
+
+
+#
+# Repo Settings
+# ================
+#
+
+repos:
+  - repo:
+    name: 'devstack'
+    url: 'https://github.com/openstack-dev/devstack.git'
+    tag: ''
+    post_install: ''
+
+
+#
+# Cluster Settings
+# ================
+#
+
 clusters: # cluster config
   - cluster:
       name: 'base'
       nodes: 
-        - 'chef'
-        - 'dev'
+        - 'node1' # nodes first
+        - 'chef' # chef last as it will then knife across nodes
         
+
+#
+# Node Settings
+# ================
+#
 
 nodes:  # node registry
   - node:
@@ -71,7 +110,11 @@ nodes:  # node registry
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
 
-# Unused macs:
+
+#
+# Unused Mac
+# ================
+#
 #   02895C872CC5
 #   02D7DAEB3F8C
 #   024E89B94036
@@ -80,3 +123,4 @@ nodes:  # node registry
 #   025EDFE84F7F
 #   02882CFDC8F
 #   0269347FC4C6
+#
