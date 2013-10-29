@@ -1,9 +1,31 @@
+#
+# Default Settings
+# ================
+#
+
+defaults: # default config
+  version: 'collective-v0.0.8'
+  vm: 'dev'
+  cluster: 'base'
+  ui: false
+
+
+#
+# Location Settings
+# ================
+#
+
 locations:
   base_boxes: './base_boxes'
   init_scripts: './manifests/init_scripts'
   downloads: './manifests/downloads'
   repos: './manifests/repos'
 
+
+#
+# Download Settings
+# ================
+#
 
 downloads:
   files:
@@ -19,6 +41,11 @@ downloads:
       track: false
 
 
+#
+# Repo Settings
+# ================
+#
+
 repos:
   - repo:
     name: 'devstack'
@@ -27,12 +54,10 @@ repos:
     post_install: ''
 
 
-defaults: # default config
-  version: 'collective-v0.0.8'
-  vm: 'dev'
-  cluster: 'base'
-  ui: false
-
+#
+# Cluster Settings
+# ================
+#
 
 clusters: # cluster config
   - cluster:
@@ -41,6 +66,11 @@ clusters: # cluster config
         - 'node1' # nodes first
         - 'chef' # chef last as it will then knife across nodes
         
+
+#
+# Node Settings
+# ================
+#
 
 nodes:  # node registry
   - node:
@@ -81,7 +111,10 @@ nodes:  # node registry
       init: 'init.sh'
 
 
-# Unused macs:
+#
+# Unused Mac
+# ================
+#
 #   02895C872CC5
 #   02D7DAEB3F8C
 #   024E89B94036
@@ -90,3 +123,4 @@ nodes:  # node registry
 #   025EDFE84F7F
 #   02882CFDC8F
 #   0269347FC4C6
+#

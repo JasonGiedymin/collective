@@ -1,5 +1,10 @@
 #!/bin/bash
-
+#
+#
+# Knife is brittle. For what reason the important parameters
+# are not declarative through the command line, is unknown.
+# If they were otherwise, there would be less file moving.
+#
 
 
 #
@@ -22,12 +27,12 @@ CHEF_SERVER_PEM=/etc/chef-server
 LEGACY_CHEF_PEM=/etc/chef
 
 # check if required dirs exist
-LOCAL_CHEF_PEM=/home/$USER/.chef
+LOCAL_CHEF_PEM=/home/$CHEF_USER/.chef
 if [ ! -d $LOCAL_CHEF_PEM ]; then
   mkdir $LOCAL_CHEF_PEM
 fi;
 
-LOCAL_CHEF_REPO=/home/$USER/repo
+LOCAL_CHEF_REPO=/home/$CHEF_USER/repo
 if [ ! -d $LOCAL_CHEF_REPO ]; then
   mkdir $LOCAL_CHEF_REPO
 fi;
@@ -60,6 +65,11 @@ sleep 20
 
 # Run Knife configure
 knife configure -i -s "https://$CHEF_IP" -u "admin" -r "$LOCAL_CHEF_REPO" --defaults -y
+
+# Runs as root, and if we accept defaults dumps knife.rb in root.
+# Move it.
+mv /root/.chef/knife.rb $LOCAL_CHEF_PEM/
+chown vagrant:vagrant $LOCAL_CHEF_PEM/knife.rb
 
 # Wake up!
 echo "=> Pinging server with silent curl to wake it up..."

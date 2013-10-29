@@ -13,5 +13,5 @@
 #     exit;
 # fi;
 
-USER=vagrant
+CHEF_USER=vagrant
 CHEF_IP="10.10.10.10"

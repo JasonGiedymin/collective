@@ -6,10 +6,9 @@
 # via vagrant
 #
 
-USER=vagrant
-MANIFESTS=/home/$USER/manifests
+MANIFESTS=/home/$CHEF_USER/manifests
 MANIFESTS_PEMS=$MANIFESTS/init_scripts/chef/files/.chef
-CHEF_PRIV=/home/$USER/.chef/
+CHEF_PRIV=/home/$CHEF_USER/.chef/
 
 #
 # Install Chef

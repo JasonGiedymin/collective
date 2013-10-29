@@ -16,6 +16,7 @@
   - Add `init_scripts/chef/deploy_chef.sh` for deploying chef server
   - Add `init_scripts/chef/setup_chef.sh` for setting up chef server
   - Add `init_scripts/lib_functions.sh` for global functions
+  - Add script to knife bootstrap `node1`
 
 * v0.0.7
   - Add open source chef server to close #10 (using Ubuntu 12.04)
