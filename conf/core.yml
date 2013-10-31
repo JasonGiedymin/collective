@@ -52,7 +52,13 @@ repos:
     url: 'https://github.com/openstack-dev/devstack.git'
     tag: ''
     post_install: ''
-
+    location: ''
+  - repo:
+    name: 'git'
+    url: 'https://github.com/opscode-cookbooks/git.git'
+    tag: 'v2.7.0'
+    post_install: ''
+    location: 'cookbooks'
 
 #
 # Cluster Settings
@@ -65,6 +71,11 @@ clusters: # cluster config
       nodes: 
         - 'node1' # nodes first
         - 'chef' # chef last as it will then knife across nodes
+      bootstrap_nodes:
+        - 'node1'
+      chef_node: 'chef'
+      user: 'vagrant'
+      pass: 'vagrant'
         
 
 #

@@ -83,6 +83,4 @@ sleep 10
 echo "Testing knife:"
 knife client list
 
-# bootstrap node1
-knife bootstrap 10.10.10.12 -x vagrant -P vagrant --sudo
-# echo "=> Chef Knife on node: [10.10.10.12]."
+# Looking for bootstrap? See rake!

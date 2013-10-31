@@ -1,3 +1,10 @@
+#
+# Vagrantfile
+#
+# Notice how lean this file is. Any injection other than init should be
+# done at a higher level.
+#
+
 HOME = File.dirname(__FILE__)
 
 require './lib/conf.rb'

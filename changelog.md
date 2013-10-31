@@ -1,7 +1,13 @@
 # Changelog
 
-* v0.0.9
-  - 
+* v0.0.9 - Kickdrum
+  - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant
+  - Add `bootstrap_nodes` node under `cluster` to list nodes that will be bootstrapped
+  - Add `chef_node` node under `cluster` to specify the chef node
+  - Add `vm:cluster:<name>:bootstrap` which will bootstrap nodes on a cluster
+  - Add task `vm:cluster:<name>:bootstrap` to `vm:cluster:<name>:provision`, and `vm:cluster:<name>:rebirth`
+  - Fix git clone issue where checkout of tag was using wrong dir location and was nested
+  - Add `location` node to `repos` node
 
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host
