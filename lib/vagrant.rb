@@ -18,8 +18,7 @@ VAGRANT_CMDS = [
 def vm_cmd(os, cmd, fire_forget=false)
   System.chdir("#{HOME}")
   vagrant_cmd = "vagrant #{cmd} #{os}"
-  puts "\n-> running command:".underline
-  puts "       [#{vagrant_cmd}]\n\n"
+  puts "\n-> running command: [#{vagrant_cmd}]\n\n".underline
 
   if (!fire_forget)
     if system vagrant_cmd

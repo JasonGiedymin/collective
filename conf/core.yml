@@ -16,10 +16,11 @@ defaults: # default config
 #
 
 locations:
-  base_boxes: './base_boxes'
-  init_scripts: './manifests/init_scripts'
-  downloads: './manifests/downloads'
-  repos: './manifests/repos'
+  base_boxes: 'base_boxes'
+  init_scripts: 'manifests/init_scripts'
+  downloads: 'manifests/downloads'
+  repos: 'manifests/repos'
+  roles: 'manifests/roles'
 
 
 #
@@ -53,6 +54,12 @@ repos:
     tag: ''
     post_install: ''
     location: ''
+  - repo:
+    name: 'chef-server'
+    url: 'https://github.com/opscode-cookbooks/chef-server.git'
+    tag: ''
+    post_install: ''
+    location: 'cookbooks'
   - repo:
     name: 'git'
     url: 'https://github.com/opscode-cookbooks/git.git'
@@ -93,6 +100,8 @@ nodes:  # node registry
       mac: '080027EB6B03'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
+      roles:
+        - chef-server
   - node:
       hostname: 'dev'
       box: 'dev'
@@ -102,6 +111,7 @@ nodes:  # node registry
       mac: 0800d2FF88F2
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
+      roles: ~
   - node:
       hostname: 'node1'
       box: 'node1'
@@ -111,6 +121,7 @@ nodes:  # node registry
       mac: '080027BE8715'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
+      roles: ~
   - node:
       hostname: 'node2'
       box: 'node2'
@@ -120,7 +131,7 @@ nodes:  # node registry
       mac: '02EECB9EC1ED'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
-
+      roles: ~
 
 #
 # Unused Mac

@@ -15,6 +15,7 @@ default_vm = Global::Settings.defaults['vm']
 clusters = Global::Settings.clusters
 box_loc = Global::Settings.locations['base_boxes']
 init_script_loc = Global::Settings.locations['init_scripts']
+roles_loc = Global::Settings.locations['roles']
 
 Vagrant.configure('2') do |config|
 
@@ -34,15 +35,29 @@ Vagrant.configure('2') do |config|
         vb.customize ['modifyvm', :id, '--memory', node['mem']]
         vb.customize ['modifyvm', :id, '--cpus', node['cpus']]
    
-        # do not change
+        # Do not change
         vb.customize ['modifyvm', :id, '--hwvirtex', 'on']
 
+        # UI
         vb.gui = node['ui']
-      end
 
-      instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"
+        # Chef Roles
+        instance.vm.provision "chef_solo" do |chef|
+          chef.cookbooks_path = "manifests/repos/cookbooks/"
+          chef.roles_path = roles_loc
+          
+          if !node['roles'].nil?
+            node['roles'].each do |role|
+              chef.add_role(role)
+            end
+          end
+
+        end # end chef_solo
+        
+        # Init
+        instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"
+      end # end instance
+
     end # end define
-    
   end # end nodes
-
-end
+end # end vagrant

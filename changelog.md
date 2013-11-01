@@ -8,6 +8,12 @@
   - Add task `vm:cluster:<name>:bootstrap` to `vm:cluster:<name>:provision`, and `vm:cluster:<name>:rebirth`
   - Fix git clone issue where checkout of tag was using wrong dir location and was nested
   - Add `location` node to `repos` node
+  - Fix git clone issue using fully qualifed path when cloning
+  - Add roles to vagrant, configured via `core.yml` to fix #16
+  - Add `roles` node to `location`
+  - Modify current deb package install of chef to instead use cookbook, knife bootstrap still as a init
+  - Modify shell provisioner to follow directly behind chef, found to be first if outside of block
+  - Add node nil check for roles
 
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host

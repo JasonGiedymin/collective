@@ -1,0 +1,13 @@
+{
+  "name": "chef-server",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Base Chef Server Role",
+  "run_list": [
+    "recipe[chef-server]"
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {}
+}
