@@ -11,9 +11,18 @@
   - Fix git clone issue using fully qualifed path when cloning
   - Add roles to vagrant, configured via `core.yml` to fix #16
   - Add `roles` node to `location`
-  - Modify current deb package install of chef to instead use cookbook, knife bootstrap still as a init
-  - Modify shell provisioner to follow directly behind chef, found to be first if outside of block
+  - Modify current install of chef from deb package to cookbook, knife bootstrap still as a init
+  - Modify `Vagrantfile` provisioner order to have chef first followed by shell
   - Add node nil check for roles
+
+  - Modify order of `cluster:base` nodes
+  - Modify `Vagrantfile` to use chef client to access the cluster's chef
+  - Dependency on fix to chef-server cookbook [chef-server issue #34](https://github.com/opscode-cookbooks/chef-server/pull/34). Local repo with fix in case of prolonged resolution is [here on branch fix/cache_dir_missing](https://github.com/JasonGiedymin/chef-server/tree/fix/cache_dir_missing)
+  - Add `chef_client` to `Vagrantfile` for nodes
+  - Add `_resources` dir under `manifests/init_scripts/` for various resources
+  - Add `chef_client/` dir under `_resources` for chef client pem keys
+  - Add `resources` node under `locations` node in core yaml
+  - Add `chef_client_keys` node under `locations` node in core yaml
 
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host

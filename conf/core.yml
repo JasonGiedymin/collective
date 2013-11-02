@@ -8,6 +8,8 @@ defaults: # default config
   vm: 'dev'
   cluster: 'base'
   ui: false
+  universal_node_name: 'cluster_node' 
+  universal_node_pem: 'cluster_node.pem'
 
 
 #
@@ -21,6 +23,8 @@ locations:
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
   roles: 'manifests/roles'
+  resources: 'manifests/resources'
+  chef_client_keys: 'manifests/resources/chef_client'
 
 
 #
@@ -66,20 +70,29 @@ repos:
     tag: 'v2.7.0'
     post_install: ''
     location: 'cookbooks'
+  - repo:
+    name: 'chef-client'
+    url: 'https://github.com/opscode-cookbooks/chef-client.git'
+    tag: ''
+    post_install: ''
+    location: 'cookbooks'
+
 
 #
 # Cluster Settings
 # ================
-#
+# NOTE: even though a chef node and nodes are specified here, the 
+#       specific node entry must allow for chef_client or else
+#       it will not be bootstrapped
 
 clusters: # cluster config
   - cluster:
       name: 'base'
       nodes: 
-        - 'node1' # nodes first
         - 'chef' # chef last as it will then knife across nodes
-      bootstrap_nodes:
-        - 'node1'
+        - 'node1' # nodes first
+      bootstrap_nodes: # this is deprecated, use vagrant chef_client instead
+        - 'node1' # deprecated
       chef_node: 'chef'
       user: 'vagrant'
       pass: 'vagrant'
@@ -88,7 +101,8 @@ clusters: # cluster config
 #
 # Node Settings
 # ================
-#
+# Note: by setting `run_client` to true, it will expect a chef node
+#       to be present
 
 nodes:  # node registry
   - node:
@@ -102,6 +116,9 @@ nodes:  # node registry
       init: 'init.sh'
       roles:
         - chef-server
+      run_client: false
+      chef_node: ~
+
   - node:
       hostname: 'dev'
       box: 'dev'
@@ -112,6 +129,9 @@ nodes:  # node registry
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles: ~
+      run_client: false
+      chef_node: ~
+
   - node:
       hostname: 'node1'
       box: 'node1'
@@ -121,7 +141,11 @@ nodes:  # node registry
       mac: '080027BE8715'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
-      roles: ~
+      roles:
+        - cluster-node
+      run_client: false
+      chef_node: chef
+
   - node:
       hostname: 'node2'
       box: 'node2'
@@ -132,6 +156,8 @@ nodes:  # node registry
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles: ~
+      run_client: true
+      chef_node: chef
 
 #
 # Unused Mac

@@ -16,6 +16,10 @@ clusters = Global::Settings.clusters
 box_loc = Global::Settings.locations['base_boxes']
 init_script_loc = Global::Settings.locations['init_scripts']
 roles_loc = Global::Settings.locations['roles']
+resources = Global::Settings.locations['resources']
+chef_client_keys = Global::Settings.locations['chef_client_keys']
+universal_node_name = Global::Settings.defaults['universal_node_name']
+universal_node_pem = Global::Settings.defaults['universal_node_pem']
 
 Vagrant.configure('2') do |config|
 
@@ -40,24 +44,33 @@ Vagrant.configure('2') do |config|
 
         # UI
         vb.gui = node['ui']
+      end # end vbox
 
-        # Chef Roles
-        instance.vm.provision "chef_solo" do |chef|
-          chef.cookbooks_path = "manifests/repos/cookbooks/"
-          chef.roles_path = roles_loc
-          
-          if !node['roles'].nil?
-            node['roles'].each do |role|
-              chef.add_role(role)
-            end
-          end
-
-        end # end chef_solo
+      # Chef Roles
+      instance.vm.provision "chef_solo" do |chef|
+        chef.cookbooks_path = "manifests/repos/cookbooks/"
+        chef.roles_path = roles_loc
         
-        # Init
-        instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"
-      end # end instance
+        if !node['roles'].nil?
+          node['roles'].each do |role|
+            chef.add_role(role)
+          end
+        end
+      end # end chef_solo
 
-    end # end define
+      # Chef Client
+      if node['run_client']
+        config.vm.provision "chef_client" do |chef|
+          # first check if node is set for using chef client
+            chef.chef_server_url = "https://10.10.10.10/"
+            chef.node_name = node['hostname']
+            chef.validation_client_name = universal_node_name
+            chef.validation_key_path = "#{chef_client_keys}/#{universal_node_pem}"
+        end
+      end
+
+      # Init
+      instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"
+    end # end instance
   end # end nodes
 end # end vagrant

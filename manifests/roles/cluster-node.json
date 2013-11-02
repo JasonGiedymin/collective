@@ -1,0 +1,16 @@
+{
+  "name": "cluster-node",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Base Cluster Node Role",
+  "run_list": [
+    "recipe[chef-client]"
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {
+    "chef_server_url": "https://10.10.10.10",
+    "node_name": "cluster-node"
+  }
+}
