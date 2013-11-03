@@ -16,7 +16,7 @@ CHEF_PRIV=/home/$CHEF_USER/.chef/
 #
 
 # echo "Installing Chef Server"
-sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
+# sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
 sudo chef-server-ctl reconfigure
 # Run Chef Tests
 # sudo chef-server-ctl test

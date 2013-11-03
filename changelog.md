@@ -1,5 +1,33 @@
 # Changelog
 
+* v0.0.9 - Kickdrum
+  - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant
+  - Add `bootstrap_nodes` node under `cluster` to list nodes that will be bootstrapped
+  - Add `chef_node` node under `cluster` to specify the chef node
+  - Add `vm:cluster:<name>:bootstrap` which will bootstrap nodes on a cluster
+  - Add task `vm:cluster:<name>:bootstrap` to `vm:cluster:<name>:provision`, and `vm:cluster:<name>:rebirth`
+  - Fix git clone issue where checkout of tag was using wrong dir location and was nested
+  - Add `location` node to `repos` node
+  - Fix git clone issue using fully qualifed path when cloning
+  - Add roles to vagrant, configured via `core.yml` to fix #16
+  - Add `roles` node to `location`
+  - Modify current install of chef from deb package to cookbook, knife bootstrap still as a init
+  - Modify `Vagrantfile` provisioner order to have chef first followed by shell
+  - Add node nil check for roles
+  - Modify order of `cluster:base` nodes
+  - Modify `Vagrantfile` to use chef client to access the cluster's chef
+  - Dependency on fix to chef-server cookbook [chef-server issue #34](https://github.com/opscode-cookbooks/chef-server/pull/34). Local repo with fix in case of prolonged resolution is [here on branch fix/cache_dir_missing](https://github.com/JasonGiedymin/chef-server/tree/fix/cache_dir_missing)
+  - Modify role `chef-server` so that it relies on deb package rather than get from omnibus repo, to save bandwidth
+  - ~~Add vagrant `chef_client` to bootstrap nodes~~
+  - Deprecate vagrant `chef_client` and instead use knife bootstrap via `vm:cluster:<name>:bootstrap`
+  - Add `_resources` dir under `manifests/init_scripts/` for various resources
+  - Add `chef_client/` dir under `_resources` for chef client pem keys
+  - Add `resources` node under `locations` node in core yaml
+  - Add `chef_client_keys` node under `locations` node in core yaml
+  - Add `manage_chef.sh` to manage knife and the chef server
+
+  Note: This version has been tested to run `rake vm:cluster:base:rebirth` with success, and that includes running the cluster bootstrap command.
+
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host
   - Add `vboxload.sh` to reload network drivers, fixes #13 (current Mavericks + vbox bug)

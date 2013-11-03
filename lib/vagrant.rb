@@ -18,6 +18,7 @@ VAGRANT_CMDS = [
 def vm_cmd(os, cmd, fire_forget=false)
   System.chdir("#{HOME}")
   vagrant_cmd = "vagrant #{cmd} #{os}"
+  puts "\n-> running command: [#{vagrant_cmd}]\n\n".underline
 
   if (!fire_forget)
     if system vagrant_cmd
@@ -111,8 +112,6 @@ namespace :vm do
   task :cleanupall do
     SUPPORTED_NODES.each do |entry|
       os = entry['node']['hostname']
-      # puts "\ncleaning up #{os}...".underline
-      # vm_cmd('virtualbox', "box remove #{version}-#{os}", true)
       Rake::Task["vm:#{os}:cleanup"].invoke
     end
     puts "\n== cleanup on all nodes complete ==".black.on_light_magenta
@@ -150,7 +149,7 @@ namespace :vm do
           puts "\n== Cluster:[#{cluster_name}] down ==".black.on_light_red
         end
 
-        desc 'Power up cluster'
+        desc 'Power up a cluster'
         task :up do
           cluster_nodes.each do |os|
             puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] ==".green
@@ -168,6 +167,8 @@ namespace :vm do
             Rake::Task["vm:#{os}:provision"].invoke
             puts "\n== Provisioning Cluster:[#{cluster_name}] complete ==".black.on_cyan
           end
+          # bootstrap the cluster
+          Rake::Task["vm:cluster:#{cluster_name}:bootstrap"].invoke
         end
 
         desc 'Rebirth an entire cluster'
@@ -176,6 +177,10 @@ namespace :vm do
             puts "\n== Rebirthing cluster:[#{cluster_name}], node:[#{os}] ==".light_blue
             Rake::Task["vm:#{os}:rebirth"].invoke
           end
+
+          # bootstrap the cluster
+          Rake::Task["vm:cluster:#{cluster_name}:bootstrap"].invoke
+          
           puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
         end
 
@@ -195,6 +200,24 @@ namespace :vm do
             puts "\n== Rebooting cluster:[#{cluster_name}]".light_yellow
             Rake::Task["vm:#{os}:reboot"].invoke
             puts "\n== Cluster:[#{cluster_name}] rebooted".black.on_light_yellow
+          end
+        end
+
+        desc 'Bootstraps the cluster with chef'
+        task :bootstrap do
+          chef_node = entry['cluster']['chef_node']
+          raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red if chef_node.nil?
+
+          bootstrap_nodes = entry['cluster']['bootstrap_nodes']
+          nodes = Global::Settings.nodes
+          user = entry['cluster']['user']
+          pass = entry['cluster']['pass']
+          
+          bootstrap_nodes.each do |node|
+            node_box= nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
+            script = "\"sudo sh manifests/init_scripts/chef/knife_bootstrap.sh bootstrap #{node_box} #{user} #{pass}\""
+            command = "ssh #{chef_node} -c #{script}"
+            vm_cmd('', command, true)
           end
         end
       end
