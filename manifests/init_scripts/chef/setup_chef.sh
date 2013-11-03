@@ -87,4 +87,3 @@ sleep 10
 echo "Testing knife:"
 knife client list
 
-# Looking for bootstrap? See rake!

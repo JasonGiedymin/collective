@@ -10,7 +10,7 @@ module Git
     puts "-> Cloning [ #{name} via #{url} ]".light_blue
     System.shell_cmd(
       "./",
-      "git clone #{url} #{dir}/#{name}",
+      "git clone --recursive #{url} #{dir}/#{name}",
       "cloning repository #{url}"
     )
   end

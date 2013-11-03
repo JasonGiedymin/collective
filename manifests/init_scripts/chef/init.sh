@@ -8,6 +8,7 @@ echo "**********************************"
 # Init Base
 # =============
 #
+
 sh /home/vagrant/manifests/init_scripts/base_init.sh
 
 
@@ -23,4 +24,14 @@ sh /home/vagrant/manifests/init_scripts/base_init.sh
 # Setup
 # =============
 # Note: This is still applicable, as it sets up knife
+
 sh /home/vagrant/manifests/init_scripts/chef/setup_chef.sh
+
+
+#
+# Knife Configure
+# =============
+#
+
+sh /home/vagrant/manifests/init_scripts/chef/manage_chef.sh
+

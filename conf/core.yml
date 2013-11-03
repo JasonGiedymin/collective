@@ -60,8 +60,8 @@ repos:
     location: ''
   - repo:
     name: 'chef-server'
-    url: 'https://github.com/opscode-cookbooks/chef-server.git'
-    tag: ''
+    url: 'https://github.com/JasonGiedymin/chef-server.git'
+    tag: 'v2.0.1'
     post_install: ''
     location: 'cookbooks'
   - repo:
@@ -89,8 +89,8 @@ clusters: # cluster config
   - cluster:
       name: 'base'
       nodes: 
-        - 'chef' # chef last as it will then knife across nodes
         - 'node1' # nodes first
+        - 'chef' # chef last as it will then knife across nodes
       bootstrap_nodes: # this is deprecated, use vagrant chef_client instead
         - 'node1' # deprecated
       chef_node: 'chef'

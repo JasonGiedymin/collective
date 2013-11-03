@@ -215,7 +215,7 @@ namespace :vm do
           
           bootstrap_nodes.each do |node|
             node_box= nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
-            script = "\"sh manifests/init_scripts/chef/knife_bootstrap.sh bootstrap #{node_box} #{user} #{pass}\""
+            script = "\"sudo sh manifests/init_scripts/chef/knife_bootstrap.sh bootstrap #{node_box} #{user} #{pass}\""
             command = "ssh #{chef_node} -c #{script}"
             vm_cmd('', command, true)
           end

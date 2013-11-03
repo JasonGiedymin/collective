@@ -14,15 +14,19 @@
   - Modify current install of chef from deb package to cookbook, knife bootstrap still as a init
   - Modify `Vagrantfile` provisioner order to have chef first followed by shell
   - Add node nil check for roles
-
   - Modify order of `cluster:base` nodes
   - Modify `Vagrantfile` to use chef client to access the cluster's chef
   - Dependency on fix to chef-server cookbook [chef-server issue #34](https://github.com/opscode-cookbooks/chef-server/pull/34). Local repo with fix in case of prolonged resolution is [here on branch fix/cache_dir_missing](https://github.com/JasonGiedymin/chef-server/tree/fix/cache_dir_missing)
-  - Add `chef_client` to `Vagrantfile` for nodes
+  - Modify role `chef-server` so that it relies on deb package rather than get from omnibus repo, to save bandwidth
+  - ~~Add vagrant `chef_client` to bootstrap nodes~~
+  - Deprecate vagrant `chef_client` and instead use knife bootstrap via `vm:cluster:<name>:bootstrap`
   - Add `_resources` dir under `manifests/init_scripts/` for various resources
   - Add `chef_client/` dir under `_resources` for chef client pem keys
   - Add `resources` node under `locations` node in core yaml
   - Add `chef_client_keys` node under `locations` node in core yaml
+  - Add `manage_chef.sh` to manage knife and the chef server
+
+  Note: This version has been tested to run `rake vm:cluster:base:rebirth` with success, and that includes running the cluster bootstrap command.
 
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host
