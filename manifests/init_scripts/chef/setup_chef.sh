@@ -26,7 +26,7 @@ sudo chef-server-ctl stop
 CHEF_SERVER_PEM=/etc/chef-server
 LEGACY_CHEF_PEM=/etc/chef
 LOCAL_CHEF_PEM=/home/$CHEF_USER/.chef
-LOCAL_CHEF_REPO=/home/$CHEF_USER/repo
+LOCAL_CHEF_REPO=/home/$CHEF_USER/manifests/repos/collective-cookbooks
 
 # check if required dirs exist
 if [ ! -d $LOCAL_CHEF_PEM ]; then

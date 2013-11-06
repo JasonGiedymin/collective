@@ -4,7 +4,7 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.9'
+  version: 'collective-v0.0.10'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -50,8 +50,17 @@ downloads:
 # Repo Settings
 # ================
 #
-
+# ./repos/                      # where we keep misc repos
+# ./repos/cookbooks             # cookbooks for local dev work (vagrant level)
+# ./repos/collective-cookbooks  # cookbooks specificaly for knife/chef server
+#
 repos:
+  - repo: # MUST BE FIRST
+    name: 'collective-cookbooks'
+    url: 'https://github.com/JasonGiedymin/collective-cookbooks.git'
+    tag: ''
+    post_install: ''
+    location: ''
   - repo:
     name: 'devstack'
     url: 'https://github.com/openstack-dev/devstack.git'
@@ -73,6 +82,12 @@ repos:
   - repo:
     name: 'chef-client'
     url: 'https://github.com/opscode-cookbooks/chef-client.git'
+    tag: ''
+    post_install: ''
+    location: 'cookbooks'
+  - repo:
+    name: 'bind'
+    url: 'https://github.com/atomic-penguin/cookbook-bind.git'
     tag: ''
     post_install: ''
     location: 'cookbooks'
@@ -106,6 +121,20 @@ clusters: # cluster config
 
 nodes:  # node registry
   - node:
+      hostname: 'dns'
+      box: 'dns'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.01'
+      mac: '02895C872CC5'
+      url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'internal-dns'
+      run_client: false
+      chef_node: ~
+
+  - node:
       hostname: 'chef'
       box: 'chef'
       cpus: 1
@@ -115,7 +144,7 @@ nodes:  # node registry
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
-        - chef-server
+        - 'chef-server'
       run_client: false
       chef_node: ~
 
@@ -125,7 +154,7 @@ nodes:  # node registry
       cpus: 1
       mem: 2048
       ip: '10.10.10.11'
-      mac: 0800d2FF88F2
+      mac: '0800d2FF88F2'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles: ~
@@ -142,7 +171,7 @@ nodes:  # node registry
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles:
-        - cluster-node
+        - 'cluster-node'
       run_client: false
       chef_node: chef
 
@@ -163,7 +192,6 @@ nodes:  # node registry
 # Unused Mac
 # ================
 #
-#   02895C872CC5
 #   02D7DAEB3F8C
 #   024E89B94036
 #   0253943912A9

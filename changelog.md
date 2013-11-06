@@ -1,5 +1,12 @@
 # Changelog
 
+* v0.0.10 - Hummingbird
+  - Add new node `DNS`
+    - installs `bind` cookbook onto node `DNS`
+  - Add `manage_chef.sh` to handle `knife` cookbook install and uploads
+  - Add reference to cookbook repository [collective-cookbooks](https://github.com/JasonGiedymin/collective-cookbooks) which is used to install on the server
+  - Modified chef server repo location `repo/` to `manifests/repos/collective-cookbooks/`
+
 * v0.0.9 - Kickdrum
   - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant
   - Add `bootstrap_nodes` node under `cluster` to list nodes that will be bootstrapped

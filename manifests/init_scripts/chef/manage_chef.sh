@@ -21,3 +21,9 @@
 # cd $LOCAL_CHEF_REPO
 # sudo knife cookbook site install git
 # Looking for bootstrap? See rake!
+
+# with a repo you can install cookbooks
+# sudo knife cookbook site install git
+
+# after installing, you can upload to server
+# sudo knife cookbook upload -a
