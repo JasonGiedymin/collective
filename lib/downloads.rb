@@ -7,6 +7,23 @@ import 'lib/conf.rb'
 import 'lib/git.rb'
 
 namespace :download do
+  desc "download cookbooks"
+  task :cookbooks do
+    cookbooks_loc = Global::Settings.locations['berkshelf']
+    
+    puts "\n-> running berks install --path #{HOME}/#{cookbooks_loc} -c #{HOME}/manifests/berkshelf/berks-config.json".underline
+    
+    puts "removing Berksfile.lock..."
+
+    FileUtils.rm_rf "#{HOME}/#{cookbooks_loc}/Berksfile.lock" 
+
+    System.shell_cmd(
+      "./manifests/berkshelf",
+      "berks install --path #{HOME}/#{cookbooks_loc} -c #{HOME}/manifests/berkshelf/berks-config.json",
+      "Downloaded cookbooks via berkshelf to [#{cookbooks_loc}]"
+    )
+  end
+
   desc "download repos"
   task :repos do
     repos = Global::Settings.repos
@@ -32,7 +49,7 @@ namespace :download do
 
       if track
         puts "-> Tracking #{full_loc}...".light_yellow
-        FileUtils.rm_rf "#{full_loc}" 
+        FileUtils.rm_rf "#{full_loc}"
       end
 
       if !File.exists?(full_loc)

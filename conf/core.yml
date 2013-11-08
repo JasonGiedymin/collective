@@ -22,6 +22,8 @@ locations:
   init_scripts: 'manifests/init_scripts'
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
+  cookbooks: 'manifests/repos/cookbooks'
+  berkshelf: 'manifests/berkshelf/cookbooks'
   roles: 'manifests/roles'
   resources: 'manifests/resources'
   chef_client_keys: 'manifests/resources/chef_client'
@@ -40,6 +42,11 @@ downloads:
       location: 'base_boxes'
       track: false
     - file:
+      name: 'ubuntu_13_10.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box'
+      location: 'base_boxes'
+      track: false
+    - file:
       name: 'chefserver.deb'
       url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
       location: 'downloads'
@@ -52,15 +59,8 @@ downloads:
 #
 # ./repos/                      # where we keep misc repos
 # ./repos/cookbooks             # cookbooks for local dev work (vagrant level)
-# ./repos/collective-cookbooks  # cookbooks specificaly for knife/chef server
 #
 repos:
-  - repo: # MUST BE FIRST
-    name: 'collective-cookbooks'
-    url: 'https://github.com/JasonGiedymin/collective-cookbooks.git'
-    tag: ''
-    post_install: ''
-    location: ''
   - repo:
     name: 'devstack'
     url: 'https://github.com/openstack-dev/devstack.git'
@@ -168,7 +168,7 @@ nodes:  # node registry
       mem: 256
       ip: '10.10.10.12'
       mac: '080027BE8715'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
         - 'cluster-node'
@@ -182,7 +182,7 @@ nodes:  # node registry
       mem: 256
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles: ~
       run_client: true

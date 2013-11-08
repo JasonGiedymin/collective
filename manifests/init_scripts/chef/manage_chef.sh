@@ -12,6 +12,17 @@
 . /home/vagrant/manifests/init_scripts/lib_functions.sh
 
 
+echo "Loading ruby, berkshelf, and uploading cookbooks..."
+
+rvm install ruby-2.0.0-p247
+rvm use ruby-2.0.0-p247
+sudo gem install berkshelf --no-ri --no-rdoc # to install in root local
+cd manifests/berkshelf
+sudo berks install --path ./cookbooks -c ./berks-config.json
+sudo berks upload -c ./berks-config.json
+
+echo "Cookbooks loaded."
+
 # cd $LOCAL_CHEF_REPO
 # git init
 # git checkout -b master

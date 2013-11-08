@@ -80,3 +80,6 @@ base_boxes/*
 ## Backups
 projectFilesBackup/*
 
+## Berkshelf
+manifests/berkshelf/cookbooks/
+Berksfile.lock

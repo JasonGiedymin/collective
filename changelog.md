@@ -1,11 +1,21 @@
 # Changelog
 
 * v0.0.10 - Hummingbird
+  - Update `README`
   - Add new node `DNS`
     - installs `bind` cookbook onto node `DNS`
   - Add `manage_chef.sh` to handle `knife` cookbook install and uploads
   - Add reference to cookbook repository [collective-cookbooks](https://github.com/JasonGiedymin/collective-cookbooks) which is used to install on the server
   - Modified chef server repo location `repo/` to `manifests/repos/collective-cookbooks/`
+  - Add `Berkshelf` to `Gemfile`
+  - Add `Berksfile` under `manifests/berkshelf/`
+  - Add `berks-config` under `manifests/berkshelf/`
+  - Move `collective-cookbooks` to `manifests/berkshelf/cookbooks`
+  - Add `java`, `scala`, `rvm` to `Berksfile`
+  - Add `rvm` attribs to `chef-server` role
+  - Add console color to `System.shell_cmd`
+  - Add ubuntu 13 box to downloads (tbd, seems to fail alot)
+  - Add commands to manage chef server via berkshelf
 
 * v0.0.9 - Kickdrum
   - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant

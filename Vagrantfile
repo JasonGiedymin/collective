@@ -17,6 +17,8 @@ box_loc = Global::Settings.locations['base_boxes']
 init_script_loc = Global::Settings.locations['init_scripts']
 roles_loc = Global::Settings.locations['roles']
 resources = Global::Settings.locations['resources']
+cookbooks = Global::Settings.locations['cookbooks']
+berkshelf = Global::Settings.locations['berkshelf']
 chef_client_keys = Global::Settings.locations['chef_client_keys']
 universal_node_name = Global::Settings.defaults['universal_node_name']
 universal_node_pem = Global::Settings.defaults['universal_node_pem']
@@ -48,7 +50,7 @@ Vagrant.configure('2') do |config|
 
       # Chef Roles
       instance.vm.provision "chef_solo" do |chef|
-        chef.cookbooks_path = "manifests/repos/cookbooks/"
+        chef.cookbooks_path = [cookbooks, berkshelf]
         chef.roles_path = roles_loc
         
         if !node['roles'].nil?
