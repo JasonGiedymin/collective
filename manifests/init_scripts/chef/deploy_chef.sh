@@ -17,9 +17,15 @@ CHEF_PRIV=/home/$CHEF_USER/.chef/
 
 # echo "Installing Chef Server"
 # sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
-sudo chef-server-ctl reconfigure
+
+# reconfigure only if we haven't already done so
+if [ ! -e $CHEF_PRIV/knife.rb ]; then
+  sudo chef-server-ctl reconfigure
+fi
+
 # Run Chef Tests
 # sudo chef-server-ctl test
+
 echo "=> Chef install complete."
 
 

@@ -16,6 +16,9 @@
   - Add console color to `System.shell_cmd`
   - Add ubuntu 13 box to downloads (tbd, seems to fail alot)
   - Add commands to manage chef server via berkshelf
+  - Modify `download:cookbooks` to always delete `Berksfile.lock` as well as the `manifests/berkshelf/cookbooks` directory
+  - Modify `berkshelf` location node to reference berkshelf root
+  - Modify `setup_chef.sh` to be `:provision` friendly and only bootstrap knife admin on a clean server
 
 * v0.0.9 - Kickdrum
   - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant

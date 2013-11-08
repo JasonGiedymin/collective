@@ -9,18 +9,18 @@ import 'lib/git.rb'
 namespace :download do
   desc "download cookbooks"
   task :cookbooks do
-    cookbooks_loc = Global::Settings.locations['berkshelf']
+    berks_loc = Global::Settings.locations['berkshelf']
     
-    puts "\n-> running berks install --path #{HOME}/#{cookbooks_loc} -c #{HOME}/manifests/berkshelf/berks-config.json".underline
-    
+    puts "\n-> running berks install --path #{HOME}/#{berks_loc} -c #{HOME}/#{berks_loc}/berks-config.json".underline    
     puts "removing Berksfile.lock..."
 
-    FileUtils.rm_rf "#{HOME}/#{cookbooks_loc}/Berksfile.lock" 
+    FileUtils.rm_rf "#{HOME}/#{berks_loc}/Berksfile.lock"
+    FileUtils.rm_rf "#{HOME}/#{berks_loc}/cookbooks"
 
     System.shell_cmd(
       "./manifests/berkshelf",
-      "berks install --path #{HOME}/#{cookbooks_loc} -c #{HOME}/manifests/berkshelf/berks-config.json",
-      "Downloaded cookbooks via berkshelf to [#{cookbooks_loc}]"
+      "berks install --path #{HOME}/#{berks_loc}/cookbooks -c #{HOME}/#{berks_loc}/berks-config.json",
+      "Downloaded cookbooks via berkshelf to [#{berks_loc}]"
     )
   end
 

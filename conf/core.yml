@@ -23,7 +23,7 @@ locations:
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
   cookbooks: 'manifests/repos/cookbooks'
-  berkshelf: 'manifests/berkshelf/cookbooks'
+  berkshelf: 'manifests/berkshelf'
   roles: 'manifests/roles'
   resources: 'manifests/resources'
   chef_client_keys: 'manifests/resources/chef_client'
