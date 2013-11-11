@@ -7,18 +7,29 @@ import 'lib/conf.rb'
 import 'lib/git.rb'
 
 namespace :download do
+  desc "download gems"
+  task :gems do
+    FileUtils.rm_rf "#{HOME}/Gemfile.lock"
+
+    System.shell_cmd(
+      "./",
+      "bundle",
+      "Downloaded gems via bundler"
+    )
+  end
+
   desc "download cookbooks"
   task :cookbooks do
     berks_loc = Global::Settings.locations['berkshelf']
     
     puts "\n-> running berks install --path #{HOME}/#{berks_loc} -c #{HOME}/#{berks_loc}/berks-config.json".underline    
-    puts "removing Berksfile.lock..."
+    puts "\nremoving Berksfile.lock...".underline
 
     FileUtils.rm_rf "#{HOME}/#{berks_loc}/Berksfile.lock"
     FileUtils.rm_rf "#{HOME}/#{berks_loc}/cookbooks"
 
     System.shell_cmd(
-      "./manifests/berkshelf",
+      "#{HOME}/#{berks_loc}",
       "berks install --path #{HOME}/#{berks_loc}/cookbooks -c #{HOME}/#{berks_loc}/berks-config.json",
       "Downloaded cookbooks via berkshelf to [#{berks_loc}]"
     )

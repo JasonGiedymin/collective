@@ -4,4 +4,4 @@
 # Init Base
 # =============
 #
-sh /home/vagrant/manifests/init_scripts/base_init.sh
+bash /home/vagrant/manifests/init_scripts/base_init.sh

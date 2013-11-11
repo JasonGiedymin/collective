@@ -9,7 +9,18 @@ echo "**********************************"
 # =============
 #
 
-sh /home/vagrant/manifests/init_scripts/base_init.sh
+bash /home/vagrant/manifests/init_scripts/base_init.sh
+
+
+#
+# Info
+# =============
+#
+echo "=> ENV:"
+env
+echo "=> Current user is: [$USER] "
+echo "=> Gem list:"
+gem list
 
 
 #
@@ -17,7 +28,8 @@ sh /home/vagrant/manifests/init_scripts/base_init.sh
 # =============
 # Note: this script is now deprecated but left for posperity
 #       install is now done via chef-server cookbook
-# sh /home/vagrant/manifests/init_scripts/chef/deploy_chef.sh
+
+bash /home/vagrant/manifests/init_scripts/chef/deploy_chef.sh
 
 
 #
@@ -25,7 +37,7 @@ sh /home/vagrant/manifests/init_scripts/base_init.sh
 # =============
 # Note: This is still applicable, as it sets up knife
 
-sh /home/vagrant/manifests/init_scripts/chef/setup_chef.sh
+bash /home/vagrant/manifests/init_scripts/chef/setup_chef.sh
 
 
 #
@@ -33,5 +45,5 @@ sh /home/vagrant/manifests/init_scripts/chef/setup_chef.sh
 # =============
 #
 
-sh /home/vagrant/manifests/init_scripts/chef/manage_chef.sh
+bash /home/vagrant/manifests/init_scripts/chef/manage_chef.sh
 

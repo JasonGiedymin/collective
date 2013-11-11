@@ -6,18 +6,12 @@
   },
   "description": "Base Chef Server Role",
   "run_list": [
-    "recipe[chef-server]",
-    "recipe[rvm]"
+    "recipe[chef-server]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
     "chef-server": {
       "package_file": "/home/vagrant/manifests/downloads/chefserver.deb"
-    },
-    "rvm": {
-      "global_gems": [
-        {"name": "berkshelf"}
-      ]
     }
   }
 }

@@ -13,6 +13,9 @@
 #
 
 . /home/vagrant/manifests/init_scripts/lib_functions.sh
+source /usr/local/rvm/scripts/rvm
+
+type rvm | head -n 1
 
 
 #
@@ -23,7 +26,9 @@
 CHEF_SERVER_PEM=/etc/chef-server
 LEGACY_CHEF_PEM=/etc/chef
 LOCAL_CHEF_PEM=/home/$CHEF_USER/.chef
-LOCAL_CHEF_REPO=/home/$CHEF_USER/manifests/repos/collective-cookbooks
+ROOT_CHEF_PEM=/root/.chef
+LOCAL_CHEF_REPO=/home/$CHEF_USER/cookbooks
+
 
 # Copy pems, knife.rb, and adjust ownership
 # sudo cp /etc/chef-server/* /home/vagrant/.chef/
@@ -54,13 +59,11 @@ startChef() {
 }
 
 setupChef() {
-  # Copy to user .chef
+  # Copy to user and root `.chef` dir
   sudo cp $CHEF_SERVER_PEM/* $LOCAL_CHEF_PEM/
-  # sudo chown -R vagrant:vagrant $LOCAL_CHEF_PEM/*
 
   # Copy to default dir
   sudo cp $CHEF_SERVER_PEM/* $LEGACY_CHEF_PEM/
-  # sudo chown -R vagrant:vagrant $LEGACY_CHEF_PEM/*
 
   # Rename for legacy options, maybe these are already cli options?
   sudo mv $LEGACY_CHEF_PEM/chef-webui.pem $LEGACY_CHEF_PEM/webui.pem
@@ -71,12 +74,28 @@ setupChef() {
   
   startChef
 
+  rvm use system
+
   # Run Knife configure
-  knife configure -i -s "https://$CHEF_IP" -u "admin" -r "$LOCAL_CHEF_REPO" --defaults -y
+  #!! for some reason ruby 1.9.3 doesn't work correctly with knife!
+  knife_cmd="$KNIFE configure -i -s https://$CHEF_IP -u admin -r $LOCAL_CHEF_REPO --admin-client-key $LOCAL_CHEF_PEM/admin.pem --defaults -y"
+  echo "knife command to run:"
+  echo "=> $knife_cmd"
+
+  $knife_cmd
+
+  rvm use default
+
+  # echo "=> Creating client cluster_node..."
+  # $KNIFE client create cluster_node --disable-editing
+
+  # echo "password" | knife configure -i -s "https://$CHEF_IP" -u "admin" -r "$LOCAL_CHEF_REPO" --defaults -y
 
   # Runs as root, and if we accept defaults dumps knife.rb in root.
-  # Move it.
-  mv /root/.chef/knife.rb $LOCAL_CHEF_PEM/
+  # Copy it.
+  sudo cp $CHEF_SERVER_PEM/* $ROOT_CHEF_PEM/
+  sudo cp $CHEF_SERVER_PEM/* $ROOT_CHEF_PEM/
+  cp /root/.chef/knife.rb $LOCAL_CHEF_PEM/
 
   # Safety check to chown it all again
   sudo chown vagrant:vagrant $LOCAL_CHEF_PEM/knife.rb
@@ -99,11 +118,13 @@ testChef() {
 }
 
 # reconfigure only if we haven't already done so
-if [ ! -e $CHEF_PRIV/knife.rb ]; then
+if [ ! -e $LOCAL_CHEF_PEM/knife.rb ]; then
+  echo "=> Setting up chef and knife for the first time..."
   prepareChef
   setupChef
   testChef
 else
+  echo "=> Chef and Knife already set up, recycling server..."
   prepareChef
   startChef
   testChef

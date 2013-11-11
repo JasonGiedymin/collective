@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
-# gem "term-ansicolor"
-gem "colorize"
-gem "berkshelf"
 
+gem "colorize"
+gem "json"
+gem "fog"
+gem "knife-server"
+gem "berkshelf"

@@ -16,3 +16,5 @@ do
 done < $file.old > $file
 
 service ssh restart
+
+echo "=> Modified SSH Config."

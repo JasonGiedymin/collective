@@ -83,3 +83,6 @@ projectFilesBackup/*
 ## Berkshelf
 manifests/berkshelf/cookbooks/
 Berksfile.lock
+
+## Chef-server
+manifests/chef-server/cookbooks/

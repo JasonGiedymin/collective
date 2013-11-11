@@ -16,5 +16,18 @@ echo "=> Completed system update and cleanup."
 # Modify SSHd
 # =============
 #
-sudo sh /home/vagrant/manifests/init_scripts/modify_sshd_config.sh
-echo "=> Modified SSH Config."
+sudo bash /home/vagrant/manifests/init_scripts/modify_sshd_config.sh
+
+
+#
+# Modify RCs
+# =============
+#
+echo "gem: --no-rdoc --no-ri" > ~/.gemrc
+
+
+#
+# Prep for chef
+# =============
+#
+sudo bash /home/vagrant/manifests/init_scripts/chef_prep.sh

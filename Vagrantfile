@@ -37,6 +37,7 @@ Vagrant.configure('2') do |config|
       instance.vm.host_name = node['hostname']# + '.' + domain
       instance.vm.network 'private_network', :mac => node['mac'], ip: node['ip']
       instance.vm.synced_folder "manifests", "/home/vagrant/manifests"
+      instance.vm.boot_timeout = 400
 
       instance.vm.provider "virtualbox" do |vb|
         vb.customize ['modifyvm', :id, '--memory', node['mem']]
