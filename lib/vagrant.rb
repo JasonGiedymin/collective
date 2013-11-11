@@ -165,10 +165,12 @@ namespace :vm do
           cluster_nodes.each do |os|
             puts "\n== Provisioning cluster:[#{cluster_name}], node:[#{os}] ==".cyan
             Rake::Task["vm:#{os}:provision"].invoke
-            puts "\n== Provisioning Cluster:[#{cluster_name}] complete ==".black.on_cyan
           end
-          # bootstrap the cluster
-          Rake::Task["vm:cluster:#{cluster_name}:bootstrap"].invoke
+
+          puts "\n== Provisioning Cluster:[#{cluster_name}] complete ==".black.on_cyan
+
+          # prepare the cluster
+          Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
         end
 
         desc 'Rebirth an entire cluster'
@@ -178,10 +180,28 @@ namespace :vm do
             Rake::Task["vm:#{os}:rebirth"].invoke
           end
 
-          # bootstrap the cluster
-          Rake::Task["vm:cluster:#{cluster_name}:bootstrap"].invoke
+          # prepare the cluster
+          Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
           
           puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
+        end
+
+        desc 'Prepare a cluster by uploading and bootstrapping'
+        task :prepare do
+          puts "Preparing cluster..."
+
+          # bootstrap the cluster (will also register node)
+          # also creates client.rb and who knows what else
+          # cause I'm lazy
+          Rake::Task["vm:cluster:#{cluster_name}:bootstrap"].invoke
+
+          # upload chef data (upload _our_ node data)
+          Rake::Task["vm:cluster:#{cluster_name}:upload"].invoke
+
+          # register the node with daemon mode and run chef-client
+          Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke
+
+          puts "\n== Preparing cluster:[#{cluster_name}] complete ==".light_yellow
         end
 
         desc 'Destroys an entire cluster and cleans up'
@@ -213,15 +233,71 @@ namespace :vm do
           user = entry['cluster']['user']
           pass = entry['cluster']['pass']
           
+          # Bootstrap because I'm lazy
           bootstrap_nodes.each do |node|
-            node_box= nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
-            script = "\"sudo sh manifests/init_scripts/chef/knife_bootstrap.sh bootstrap #{node_box} #{user} #{pass}\""
+            node_box = nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
+            # script = "\"rvm use system && cd ~/manifests/chef-server/ && bash ~/manifests/chef-server/knife_bootstrap.sh bootstrap 10.10.10.12 vagrant vagrant\""
+            script = "\"bash manifests/chef-server/knife_bootstrap.sh bootstrap #{node_box} #{user} #{pass}\""
+            # script = "\"sudo chef-client\""
+            command = "ssh #{chef_node} -c #{script}"
+            vm_cmd('', command, true)
+
+            puts "\n== Bootstrapping cluster:[#{cluster_name}], node:[#{node}] complete =="
+          end
+
+          puts "\n== Bootstrapping cluster:[#{cluster_name}] complete ==".light_yellow.on_light_blue
+        end
+
+        desc 'Sync the cluster node with chef'
+        task :sync do
+          chef_node = entry['cluster']['chef_node']
+          raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red if chef_node.nil?
+
+          bootstrap_nodes = entry['cluster']['bootstrap_nodes']
+          nodes = Global::Settings.nodes
+          user = entry['cluster']['user']
+          pass = entry['cluster']['pass']
+
+          # run chef-client on each
+          bootstrap_nodes.each do |node|
+            node_box = nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
+            script = "\"sudo chef-client\""
+            command = "ssh #{node} -c #{script}"
+            vm_cmd('', command, true)
+
+            puts "\n== chef-client synced on cluster:[#{cluster_name}], node:[#{node}] complete =="
+          end
+
+          puts "\n== Syncing on cluster:[#{cluster_name}] complete ==".light_yellow.on_light_blue
+        end
+
+        desc 'Uploads all recipes, roles, nodes, environments to the chef server'
+        task :upload do
+          chef_node = entry['cluster']['chef_node']
+          raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red if chef_node.nil?
+
+          bootstrap_nodes = entry['cluster']['bootstrap_nodes']
+          nodes = Global::Settings.nodes
+          user = entry['cluster']['user']
+          pass = entry['cluster']['pass']
+          user_home = "/home/#{user}"
+
+          scripts = [
+            "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force cookbooks\"",
+            "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force roles\"",
+            "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force nodes\""
+          ]
+          
+          scripts.each do |script|
             command = "ssh #{chef_node} -c #{script}"
             vm_cmd('', command, true)
           end
-        end
-      end
-    end # end clusters
+
+          puts "\n== Uploading cluster:[#{cluster_name}], node:[#{chef_node}] complete ==".light_yellow.on_light_blue
+        end # end upload
+
+      end # end curr cluster
+    end # end clusters each
   end # end cluster
 
 end # end vm

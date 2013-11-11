@@ -3,6 +3,7 @@ import 'lib/system.rb'
 import 'lib/vagrant.rb'
 import 'lib/git.rb'
 import 'lib/downloads.rb'
+import 'lib/uploads.rb'
 
 require 'colorize'
 

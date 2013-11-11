@@ -7,6 +7,34 @@ import 'lib/conf.rb'
 import 'lib/git.rb'
 
 namespace :download do
+  desc "download gems"
+  task :gems do
+    FileUtils.rm_rf "#{HOME}/Gemfile.lock"
+
+    System.shell_cmd(
+      "./",
+      "bundle",
+      "Downloaded gems via bundler"
+    )
+  end
+
+  desc "download cookbooks"
+  task :cookbooks do
+    berks_loc = Global::Settings.locations['berkshelf']
+    
+    puts "\n-> running berks install --path #{HOME}/#{berks_loc} -c #{HOME}/#{berks_loc}/berks-config.json".underline    
+    puts "\nremoving Berksfile.lock...".underline
+
+    FileUtils.rm_rf "#{HOME}/#{berks_loc}/Berksfile.lock"
+    FileUtils.rm_rf "#{HOME}/#{berks_loc}/cookbooks"
+
+    System.shell_cmd(
+      "#{HOME}/#{berks_loc}",
+      "berks install --path #{HOME}/#{berks_loc}/cookbooks -c #{HOME}/#{berks_loc}/berks-config.json",
+      "Downloaded cookbooks via berkshelf to [#{berks_loc}]"
+    )
+  end
+
   desc "download repos"
   task :repos do
     repos = Global::Settings.repos
@@ -32,7 +60,7 @@ namespace :download do
 
       if track
         puts "-> Tracking #{full_loc}...".light_yellow
-        FileUtils.rm_rf "#{full_loc}" 
+        FileUtils.rm_rf "#{full_loc}"
       end
 
       if !File.exists?(full_loc)

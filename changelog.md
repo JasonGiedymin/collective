@@ -1,5 +1,41 @@
 # Changelog
 
+* v0.0.10 - Hummingbird
+  - Update `README`
+  - Add new node `DNS`
+    - installs `bind` cookbook onto node `DNS`
+  - Add `manage_chef.sh` to handle `knife` cookbook install and uploads
+  - Add reference to cookbook repository [collective-cookbooks](https://github.com/JasonGiedymin/collective-cookbooks) which is used to install on the server
+  - Modified chef server repo location `repo/` to `manifests/repos/collective-cookbooks/`
+  - Add `Berkshelf` to `Gemfile`
+  - Add `Berksfile` under `manifests/berkshelf/`
+  - Add `berks-config` under `manifests/berkshelf/`
+  - Move `collective-cookbooks` to `manifests/berkshelf/cookbooks`
+  - Add `java`, `scala`, `rvm` to `Berksfile`
+  - Add `rvm` attribs to `chef-server` role
+  - Add console color to `System.shell_cmd`
+  - Add ubuntu 13 box to downloads (tbd, seems to fail alot)
+  - Add commands to manage chef server via berkshelf
+  - Modify `download:cookbooks` to always delete `Berksfile.lock` as well as the `manifests/berkshelf/cookbooks` directory
+  - Modify `berkshelf` location node to reference berkshelf root
+  - Modify `setup_chef.sh` to be `:provision` friendly and only bootstrap knife admin on a clean server
+  - Rename `dev` box to `devstack` to be more clear what it is used for
+  - Add `dev` box which will be pure dev box, not tied to anything (including any [IP]aaS)
+  - Add `desc` node to each box for light reading
+  - Add `apt` to Berkshelf (it is pulled as a dependency but I want it as a hard dependency)
+  - Add new role: `roles-runtimes` that will be a base runtime role for most nodes
+  - Add `update:all` rake task to update all files, similar to `install:auto` of old.
+  - Add `fog` and `knife-server`, hopefully someday it will actually work
+  - Add `400`s timeout directive to vagrant ssh
+  - Add `chef-zero`
+  - Move `berkshelf` under `chef-server` which will serve as a base for chef server data
+  - Add `vm:cluster:<name>:upload` which will upload data to the chef server
+  - Add `vm:cluster:<name>:sync` which will sync the node to the chef server
+  - Add `vm:cluster:<name>:prepare` which will bootstrap, upload, and then sync the cluster
+  
+* TODO:
+    - Integrated local roles into chef-server roles to dog food role specs
+
 * v0.0.9 - Kickdrum
   - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant
   - Add `bootstrap_nodes` node under `cluster` to list nodes that will be bootstrapped

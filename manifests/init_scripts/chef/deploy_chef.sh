@@ -16,10 +16,45 @@ CHEF_PRIV=/home/$CHEF_USER/.chef/
 #
 
 # echo "Installing Chef Server"
-# sudo dpkg -i package_file.deb manifests/downloads/chefserver.deb
+ReInstallChef=${ReInstallChef:=true}
+
+installChef() {
+  sudo dpkg -i manifests/downloads/chefserver.deb
+}
+
+if [ $ReInstallChef = false ]; then
+  echo "=> Reinstalling Chef server..."
+  vagrant_chef=/home/vagrant/.chef/knife.rb
+  root_chef=/root/.chef/knife.rb
+
+  if [ -e $vagrant_chef ]; then
+    sudo rm -R $vagrant_chef
+  fi;
+  
+  if [ -e $root_chef ]; then
+    sudo rm -R $root_chef 
+  fi;
+
+  installChef
+else
+  if [ ! -d /opt/chef-server/ ]; then
+    echo "=> Chef server not found, installing server..."
+    installChef
+  else
+    echo "=> Chef server already installed, moving on."
+  fi
+fi
+
+# reconfigure only if we haven't already done so
+# if [ ! -e $CHEF_PRIV/knife.rb ]; then
+  # echo "First time setting up server running reconfigure..."
+echo "=> Running reconfigure for good measure..."
 sudo chef-server-ctl reconfigure
+# fi
+
 # Run Chef Tests
 # sudo chef-server-ctl test
+
 echo "=> Chef install complete."
 
 

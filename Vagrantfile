@@ -17,6 +17,9 @@ box_loc = Global::Settings.locations['base_boxes']
 init_script_loc = Global::Settings.locations['init_scripts']
 roles_loc = Global::Settings.locations['roles']
 resources = Global::Settings.locations['resources']
+cookbooks = Global::Settings.locations['cookbooks']
+berkshelf_home = Global::Settings.locations['berkshelf']
+berkshelf = "#{berkshelf_home}/cookbooks"
 chef_client_keys = Global::Settings.locations['chef_client_keys']
 universal_node_name = Global::Settings.defaults['universal_node_name']
 universal_node_pem = Global::Settings.defaults['universal_node_pem']
@@ -34,6 +37,7 @@ Vagrant.configure('2') do |config|
       instance.vm.host_name = node['hostname']# + '.' + domain
       instance.vm.network 'private_network', :mac => node['mac'], ip: node['ip']
       instance.vm.synced_folder "manifests", "/home/vagrant/manifests"
+      instance.vm.boot_timeout = 400
 
       instance.vm.provider "virtualbox" do |vb|
         vb.customize ['modifyvm', :id, '--memory', node['mem']]
@@ -48,7 +52,7 @@ Vagrant.configure('2') do |config|
 
       # Chef Roles
       instance.vm.provision "chef_solo" do |chef|
-        chef.cookbooks_path = "manifests/repos/cookbooks/"
+        chef.cookbooks_path = [cookbooks, berkshelf]
         chef.roles_path = roles_loc
         
         if !node['roles'].nil?

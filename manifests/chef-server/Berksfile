@@ -1,0 +1,17 @@
+site :opscode
+
+cookbook 'apt'
+cookbook 'git'
+cookbook 'rvm', git: "https://github.com/fnichol/chef-rvm.git"
+cookbook 'ruby_build'
+cookbook 'dmg', git: "https://github.com/JasonGiedymin/dmg.git", branch: "dev/symbol_keys"
+
+cookbook 'chef-server', git: "https://github.com/JasonGiedymin/chef-server.git", branch: "fix/cache_dir_missing"
+cookbook 'chef-client'
+
+cookbook 'java'
+cookbook 'scala'
+
+cookbook 'mysql'
+cookbook 'nginx'
+cookbook 'jenkins'

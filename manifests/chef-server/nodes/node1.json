@@ -1,0 +1,9 @@
+{
+  "chef_type": "node",
+  "json_class": "Chef::Node",
+  "name": "node1",
+  "chef_environment": "_default",
+  "run_list": [
+    "recipe[apt]"
+  ]
+}

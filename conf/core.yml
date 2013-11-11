@@ -4,7 +4,7 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.9'
+  version: 'collective-v0.0.10'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -22,6 +22,8 @@ locations:
   init_scripts: 'manifests/init_scripts'
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
+  cookbooks: 'manifests/repos/cookbooks'
+  berkshelf: 'manifests/chef-server'
   roles: 'manifests/roles'
   resources: 'manifests/resources'
   chef_client_keys: 'manifests/resources/chef_client'
@@ -40,6 +42,11 @@ downloads:
       location: 'base_boxes'
       track: false
     - file:
+      name: 'ubuntu_13_10.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box'
+      location: 'base_boxes'
+      track: false
+    - file:
       name: 'chefserver.deb'
       url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
       location: 'downloads'
@@ -50,7 +57,9 @@ downloads:
 # Repo Settings
 # ================
 #
-
+# ./repos/                      # where we keep misc repos
+# ./repos/cookbooks             # cookbooks for local dev work (vagrant level)
+#
 repos:
   - repo:
     name: 'devstack'
@@ -76,6 +85,12 @@ repos:
     tag: ''
     post_install: ''
     location: 'cookbooks'
+  - repo:
+    name: 'bind'
+    url: 'https://github.com/atomic-penguin/cookbook-bind.git'
+    tag: ''
+    post_install: ''
+    location: 'cookbooks'
 
 
 #
@@ -90,10 +105,10 @@ clusters: # cluster config
       name: 'base'
       nodes: 
         - 'node1' # nodes first
-        - 'chef' # chef last as it will then knife across nodes
+        - 'chefzero' # chef last as it will then knife across nodes
       bootstrap_nodes: # this is deprecated, use vagrant chef_client instead
         - 'node1' # deprecated
-      chef_node: 'chef'
+      chef_node: 'chefzero'
       user: 'vagrant'
       pass: 'vagrant'
         
@@ -106,26 +121,43 @@ clusters: # cluster config
 
 nodes:  # node registry
   - node:
-      hostname: 'chef'
-      box: 'chef'
+      hostname: 'dns'
+      box: 'dns'
+      desc: 'NET layer DNS server'
       cpus: 1
       mem: 256
+      ip: '10.10.10.01'
+      mac: '02895C872CC5'
+      url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'internal-dns'
+      run_client: false
+      chef_node: ~
+
+  - node:
+      hostname: 'chef'
+      box: 'chef'
+      desc: 'NET layer chef server that can bootstrap ANY node or cluster'
+      cpus: 1 # more than 1 cpu fails vagrant, sigh...
+      mem: 512
       ip: '10.10.10.10'
       mac: '080027EB6B03'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
-        - chef-server
+        - 'role-runtimes'
       run_client: false
       chef_node: ~
 
   - node:
-      hostname: 'dev'
-      box: 'dev'
+      hostname: 'devstack'
+      box: 'devstack'
+      desc: 'devstack box to test and develop with'
       cpus: 1
       mem: 2048
       ip: '10.10.10.11'
-      mac: 0800d2FF88F2
+      mac: '0800d2FF88F2'
       url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles: ~
@@ -135,36 +167,70 @@ nodes:  # node registry
   - node:
       hostname: 'node1'
       box: 'node1'
+      desc: 'a primary node to be used by a cluster'
       cpus: 1
       mem: 256
       ip: '10.10.10.12'
       mac: '080027BE8715'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
-        - cluster-node
+        - 'cluster-node'
       run_client: false
-      chef_node: chef
+      chef_node: chefzero
 
   - node:
       hostname: 'node2'
       box: 'node2'
+      desc: 'a secondary node to be used by a cluster'
       cpus: 1
       mem: 256
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
-      roles: ~
-      run_client: true
-      chef_node: chef
+      roles:
+        - 'role-runtimes'
+      run_client: false
+      chef_node: chefzero
+
+  - node:
+      hostname: 'dev'
+      box: 'dev'
+      desc: 'develop on this box, it will not be bootstrapped by any [IPS]asS'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.14'
+      mac: '02D7DAEB3F8C'
+      url: 'ubuntu_12_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'role-runtimes'
+      run_client: false
+      chef_node: ~
+
+  - node:
+      hostname: 'chefzero'
+      box: 'chefzero'
+      desc: 'chefzero server'
+      cpus: 1 # more than 1 cpu fails vagrant, sigh...
+      mem: 512
+      ip: '10.10.10.15'
+      mac: '024E89B94036'
+      url: 'ubuntu_12_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'role-runtimes'
+        - 'role-chefzero'
+      run_client: false
+      chef_node: ~
+
+
 
 #
 # Unused Mac
 # ================
 #
-#   02895C872CC5
-#   02D7DAEB3F8C
 #   024E89B94036
 #   0253943912A9
 #   0277E25CD585
