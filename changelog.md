@@ -1,5 +1,20 @@
 # Changelog
 
+
+* v0.0.11 - "Tree Frog"
+  - Modify `chef-client` during `sync` ~~to start in daemon mode~~ (_daemon mode has a memory leak, verified via my mem profiling, it will eventually crash the system; notes added_)
+  - Swap `prepare` with `sync` in the `vm:cluster` namespace
+  - Fix issue with `vm:cluster:<name>:up` that accidently called `vm:<node>:prepare` instead of `vm:cluster:<name>:prepare`. Also call `prepare` after nodes are up.
+  - Modify `vm:cluster:reboot` so that each `vm:<node>:reboot` will be forced provisioned again
+  - Start of componentizing
+  - Integrated local roles into chef-server roles to dog food role specs
+  - Add `sync` to `vm:cluster:<name>:reboot`
+  - Add `sync` to `vm:cluster:<name>:rebirth`
+
+== TODOs ==
+-> issue with roles not being updated
+
+
 * v0.0.10 - Hummingbird
   - Update `README`
   - Add new node `DNS`
@@ -32,9 +47,7 @@
   - Add `vm:cluster:<name>:upload` which will upload data to the chef server
   - Add `vm:cluster:<name>:sync` which will sync the node to the chef server
   - Add `vm:cluster:<name>:prepare` which will bootstrap, upload, and then sync the cluster
-  
-* TODO:
-    - Integrated local roles into chef-server roles to dog food role specs
+
 
 * v0.0.9 - Kickdrum
   - Add `knife_bootstrap.sh` shell proxy that can be run and not rely on vagrant
@@ -63,6 +76,7 @@
   - Add `manage_chef.sh` to manage knife and the chef server
 
   Note: This version has been tested to run `rake vm:cluster:base:rebirth` with success, and that includes running the cluster bootstrap command.
+
 
 * v0.0.8
   - Add `support` dir, to be used for work arounds and arch specific things on dev host
@@ -95,6 +109,7 @@
   - Add init script for chef server
   - Add additional comments and terminal logging
 
+
 * v0.0.6
   - Add locale to dev init
   - Add apt-get update/autoclean/remove to init
@@ -103,10 +118,12 @@
   - Fix cleanup to properly clean up when doing `vm:destroy` or `vm:cleanup`
   - Fix destroy to run cleanup after (found when modifying base OS)
 
+
 * v0.0.5
   - Add extra terminal logging when using raw `vm:<command>` execution paths
   - Fix version so that it reads from `core.yml`
   - Fix raw `vm:destroy` to fire and forget the command (sometimes no box can be found to be removed)
+
 
 * v0.0.4
   - Fix vagrant 'randomness' issues from not nesting all calls
@@ -116,12 +133,16 @@
   - Modify reboot to not provision again
   - Add sleep to allow host system eth devices to 'catch-up'
 
+
 * v0.0.3
   - Add init script using inline path execution
   - Add scripts to manifest/<box>
 
+
 * v0.0.2
   - Rewrite stripping out all libs
 
+
 * v0.0.1
   - Rewrite with focus on clean cluster settings
+

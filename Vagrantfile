@@ -18,8 +18,6 @@ init_script_loc = Global::Settings.locations['init_scripts']
 roles_loc = Global::Settings.locations['roles']
 resources = Global::Settings.locations['resources']
 cookbooks = Global::Settings.locations['cookbooks']
-berkshelf_home = Global::Settings.locations['berkshelf']
-berkshelf = "#{berkshelf_home}/cookbooks"
 chef_client_keys = Global::Settings.locations['chef_client_keys']
 universal_node_name = Global::Settings.defaults['universal_node_name']
 universal_node_pem = Global::Settings.defaults['universal_node_pem']
@@ -52,7 +50,7 @@ Vagrant.configure('2') do |config|
 
       # Chef Roles
       instance.vm.provision "chef_solo" do |chef|
-        chef.cookbooks_path = [cookbooks, berkshelf]
+        chef.cookbooks_path = [cookbooks]
         chef.roles_path = roles_loc
         
         if !node['roles'].nil?
@@ -62,8 +60,8 @@ Vagrant.configure('2') do |config|
         end
       end # end chef_solo
 
-      # # Chef Client
-      # if node['run_client']
+      # # Chef Client # Disabled but left for posperity
+      # if node['run_client']?
       #   config.vm.provision "chef_client" do |chef|
       #     # first check if node is set for using chef client
       #       chef.chef_server_url = "https://10.10.10.10/"

@@ -15,3 +15,5 @@ cookbook 'scala'
 cookbook 'mysql'
 cookbook 'nginx'
 cookbook 'jenkins'
+cookbook 'bind'
+
