@@ -1,25 +1,18 @@
 {
-  "name": "role-runtimes",
+  "name": "cluster-node",
   "chef_type": "role",
   "json_class": "Chef::Role",
   "default_attributes": {
   },
-  "description": "Base Runtimes bootstrap",
+  "description": "Base Cluster Node Role",
   "run_list": [
-    "recipe[apt]",
-    "recipe[rvm::system]"
+    "recipe[chef-client]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
-    "rvm": {
-      "rubies": [
-      ],
-      "global_gems": [
-        {"name": "berkshelf"}
-        {"name": "chef"}
-      ]
-    },
-    
+    "chef_server_url": "https://10.10.10.10",
+    "node_name": "cluster-node",
+
     "java" : {
       "install_flavor": "oracle",
       "oracle": {
@@ -27,5 +20,6 @@
       },
       "jdk_version": "7"
     }
+
   }
 }

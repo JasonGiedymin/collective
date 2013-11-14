@@ -76,6 +76,7 @@ namespace :vm do
       task :reboot do
         Rake::Task["vm:#{os}:halt"].invoke
         Rake::Task["vm:#{os}:up"].invoke
+        Rake::Task["vm:#{os}:provision"].invoke
       end
 
     end # end namespace os
@@ -154,10 +155,11 @@ namespace :vm do
           cluster_nodes.each do |os|
             puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] ==".green
             Rake::Task["vm:#{os}:up"].invoke
-            # Rake::Task["vm:#{os}:provision"].invoke # for good measure
-            #Rake::Task["vm:#{os}:reboot"].invoke # for good measure
-            puts "\n== Cluster:[#{cluster_name}] up and running ==".black.on_green
+            Rake::Task["vm:#{os}:provision"].invoke # for good measure
           end
+
+          Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke # for good measure
+          puts "\n== Cluster:[#{cluster_name}] up and running ==".black.on_green
         end
 
         desc 'Re-provisions a cluster'
@@ -181,14 +183,14 @@ namespace :vm do
           end
 
           # prepare the cluster
-          Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
+          Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke
           
           puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
         end
 
-        desc 'Prepare a cluster by uploading and bootstrapping'
-        task :prepare do
-          puts "Preparing cluster..."
+        desc 'Sync a cluster by uploading and ping'
+        task :sync do
+          puts "Syncing cluster..."
 
           # bootstrap the cluster (will also register node)
           # also creates client.rb and who knows what else
@@ -199,9 +201,9 @@ namespace :vm do
           Rake::Task["vm:cluster:#{cluster_name}:upload"].invoke
 
           # register the node with daemon mode and run chef-client
-          Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke
+          Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
 
-          puts "\n== Preparing cluster:[#{cluster_name}] complete ==".light_yellow
+          puts "\n== Syncing cluster:[#{cluster_name}] complete ==".light_yellow
         end
 
         desc 'Destroys an entire cluster and cleans up'
@@ -219,6 +221,7 @@ namespace :vm do
           cluster_nodes.each do |os|
             puts "\n== Rebooting cluster:[#{cluster_name}]".light_yellow
             Rake::Task["vm:#{os}:reboot"].invoke
+            Rake::Task["vm:#{os}:sync"].invoke
             puts "\n== Cluster:[#{cluster_name}] rebooted".black.on_light_yellow
           end
         end
@@ -248,8 +251,8 @@ namespace :vm do
           puts "\n== Bootstrapping cluster:[#{cluster_name}] complete ==".light_yellow.on_light_blue
         end
 
-        desc 'Sync the cluster node with chef'
-        task :sync do
+        desc 'Prepare the cluster node with chef'
+        task :prepare do
           chef_node = entry['cluster']['chef_node']
           raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red if chef_node.nil?
 
@@ -261,14 +264,14 @@ namespace :vm do
           # run chef-client on each
           bootstrap_nodes.each do |node|
             node_box = nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
-            script = "\"sudo chef-client\""
+            script = "\"sudo chef-client\"" # -d daemon mode has a memory leak
             command = "ssh #{node} -c #{script}"
             vm_cmd('', command, true)
 
-            puts "\n== chef-client synced on cluster:[#{cluster_name}], node:[#{node}] complete =="
+            puts "\n== chef-client prepared on cluster:[#{cluster_name}], node:[#{node}] complete =="
           end
 
-          puts "\n== Syncing on cluster:[#{cluster_name}] complete ==".light_yellow.on_light_blue
+          puts "\n== Cluster:[#{cluster_name}] prepared ==".light_yellow.on_light_blue
         end
 
         desc 'Uploads all recipes, roles, nodes, environments to the chef server'
@@ -284,6 +287,7 @@ namespace :vm do
 
           scripts = [
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force cookbooks\"",
+            "\"cd #{user_home}/manifests/chef-server/ && sudo knife role bulk delete \"*\"",
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force roles\"",
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force nodes\""
           ]

@@ -1,49 +1,58 @@
 #!/bin/bash
 
-echo "**********************************"
-echo "*****     INIT RUNNING       *****"
-echo "**********************************"
-
 #
 # Init Base
 # =============
 #
-
 bash /home/vagrant/manifests/init_scripts/base_init.sh
 
+
+#
+# Incudes
+# =============
+#
+. /home/vagrant/manifests/init_scripts/lib_functions.sh
 
 #
 # Info
 # =============
 #
+echo "=> Ruby version"
+ruby -v
+
 echo "=> ENV:"
 env
+
 echo "=> Current user is: [$USER] "
+
 echo "=> Gem list:"
 gem list
 
 
-#
-# Deploy
-# =============
-# Note: this script is now deprecated but left for posperity
-#       install is now done via chef-server cookbook
 
-bash /home/vagrant/manifests/init_scripts/chef/deploy_chef.sh
+# kill any ruby running processes aka chef-zero, until puma is fixed
+sudo killall ruby
 
+# Start it in daemon mode
+chef-zero -d --host 10.10.10.10 --port 4000
 
-#
-# Setup
-# =============
-# Note: This is still applicable, as it sets up knife
+# Upload cookbooks
+cd /home/vagrant/manifests/chef-server
 
-bash /home/vagrant/manifests/init_scripts/chef/setup_chef.sh
+# Run client list to test
+knife client -V list
 
+# berks upload -c ./berks-config.json
+# sudo knife upload -V --force cookbooks
+# sudo knife upload -V --force roles
 
-#
-# Knife Configure
-# =============
-#
+knife cookbook list
 
-bash /home/vagrant/manifests/init_scripts/chef/manage_chef.sh
+# knife configure \
+#   -r /home/vagrant/manifests/berkshelf/cookbooks \
+#   -i -s https://10.10.10.10 \
+#   -u admin \
+#   -r /home/vagrant/.chef/ \
+#   --defaults -y
 
+echo "Done."

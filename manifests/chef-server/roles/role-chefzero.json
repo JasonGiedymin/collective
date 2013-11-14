@@ -1,12 +1,13 @@
 {
-  "name": "runtimes",
+  "name": "role-chefzero",
   "chef_type": "role",
   "json_class": "Chef::Role",
   "default_attributes": {
   },
   "description": "Base Runtimes bootstrap",
   "run_list": [
-    "recipe[apt]"
+    "recipe[apt]",
+    "recipe[rvm::system]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
@@ -14,8 +15,8 @@
       "rubies": [
       ],
       "global_gems": [
-        {"name": "berkshelf"},
-        {"name": "chef"}
+        {"name": "chef"},
+        {"name": "chef-zero"}
       ]
     }
   }

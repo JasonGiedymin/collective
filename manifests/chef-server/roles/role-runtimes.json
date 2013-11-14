@@ -15,7 +15,7 @@
       "rubies": [
       ],
       "global_gems": [
-        {"name": "berkshelf"}
+        {"name": "berkshelf"},
         {"name": "chef"}
       ]
     },

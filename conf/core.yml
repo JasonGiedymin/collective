@@ -4,7 +4,7 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.10'
+  version: 'collective-v0.0.11'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -22,9 +22,9 @@ locations:
   init_scripts: 'manifests/init_scripts'
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
-  cookbooks: 'manifests/repos/cookbooks'
+  cookbooks: 'manifests/chef-server/cookbooks'
   berkshelf: 'manifests/chef-server'
-  roles: 'manifests/roles'
+  roles: 'manifests/chef-server/roles'
   resources: 'manifests/resources'
   chef_client_keys: 'manifests/resources/chef_client'
 
@@ -59,18 +59,12 @@ downloads:
 #
 # ./repos/                      # where we keep misc repos
 # ./repos/cookbooks             # cookbooks for local dev work (vagrant level)
-#
+# ./chef-server/cookbooks       # cookbooks for chef-server, NOT TO BE USED BY VAGRANT
 repos:
   - repo:
-    name: 'devstack'
-    url: 'https://github.com/openstack-dev/devstack.git'
+    name: 'bind'
+    url: 'https://github.com/atomic-penguin/cookbook-bind.git'
     tag: ''
-    post_install: ''
-    location: ''
-  - repo:
-    name: 'chef-server'
-    url: 'https://github.com/JasonGiedymin/chef-server.git'
-    tag: 'v2.0.1'
     post_install: ''
     location: 'cookbooks'
   - repo:
@@ -80,17 +74,36 @@ repos:
     post_install: ''
     location: 'cookbooks'
   - repo:
+    name: 'devstack'
+    url: 'https://github.com/openstack-dev/devstack.git'
+    tag: ''
+    post_install: ''
+    location: ''
+  - repo:
     name: 'chef-client'
     url: 'https://github.com/opscode-cookbooks/chef-client.git'
     tag: ''
     post_install: ''
     location: 'cookbooks'
   - repo:
-    name: 'bind'
-    url: 'https://github.com/atomic-penguin/cookbook-bind.git'
+    name: 'chef-server'
+    url: 'https://github.com/JasonGiedymin/chef-server.git'
+    tag: 'v2.0.1'
+    post_install: ''
+    location: 'cookbooks'
+  - repo:
+    name: 'rvm'
+    url: 'https://github.com/fnichol/chef-rvm.git'
     tag: ''
     post_install: ''
     location: 'cookbooks'
+  - repo:
+    name: 'java'
+    url: 'https://github.com/opscode-cookbooks/java.git'
+    tag: ''
+    post_install: ''
+    location: 'cookbooks'
+
 
 
 #
@@ -105,10 +118,10 @@ clusters: # cluster config
       name: 'base'
       nodes: 
         - 'node1' # nodes first
-        - 'chefzero' # chef last as it will then knife across nodes
-      bootstrap_nodes: # this is deprecated, use vagrant chef_client instead
-        - 'node1' # deprecated
-      chef_node: 'chefzero'
+        - 'chef' # chef last as it will then knife across nodes
+      bootstrap_nodes:
+        - 'node1'
+      chef_node: 'chef'
       user: 'vagrant'
       pass: 'vagrant'
         
@@ -135,20 +148,67 @@ nodes:  # node registry
       run_client: false
       chef_node: ~
 
+  # Out of commission for now
+  # - node:
+  #     hostname: 'chef'
+  #     box: 'chef'
+  #     desc: 'NET layer chef server that can bootstrap ANY node or cluster'
+  #     cpus: 1 # more than 1 cpu fails vagrant, sigh...
+  #     mem: 512
+  #     ip: '10.10.10.15'
+  #     mac: '080027EB6B03'
+  #     url: 'ubuntu_12_04_lts.box'
+  #     init: 'init.sh'
+  #     roles:
+  #       - 'role-runtimes'
+  #     run_client: false
+  #     chef_node: ~
+
   - node:
       hostname: 'chef'
       box: 'chef'
-      desc: 'NET layer chef server that can bootstrap ANY node or cluster'
+      desc: 'chef server'
       cpus: 1 # more than 1 cpu fails vagrant, sigh...
       mem: 512
       ip: '10.10.10.10'
-      mac: '080027EB6B03'
+      mac: '024E89B94036'
+      url: 'ubuntu_12_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'role-chefzero'
+      run_client: false
+      chef_node: ~
+
+  - node:
+      hostname: 'node1'
+      box: 'node1'
+      desc: 'a primary node to be used by a cluster'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.12'
+      mac: '080027BE8715'
+      url: 'ubuntu_12_04_lts.box'
+      init: 'init.sh'
+      roles:
+        - 'cluster-node'
+        - 'role-runtimes'
+      run_client: false
+      chef_node: chef
+
+  - node:
+      hostname: 'node2'
+      box: 'node2'
+      desc: 'a secondary node to be used by a cluster'
+      cpus: 1
+      mem: 256
+      ip: '10.10.10.13'
+      mac: '02EECB9EC1ED'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
         - 'role-runtimes'
       run_client: false
-      chef_node: ~
+      chef_node: chef
 
   - node:
       hostname: 'devstack'
@@ -165,66 +225,18 @@ nodes:  # node registry
       chef_node: ~
 
   - node:
-      hostname: 'node1'
-      box: 'node1'
-      desc: 'a primary node to be used by a cluster'
-      cpus: 1
-      mem: 256
-      ip: '10.10.10.12'
-      mac: '080027BE8715'
-      url: 'ubuntu_12_04_lts.box'
-      init: 'init.sh'
-      roles:
-        - 'cluster-node'
-      run_client: false
-      chef_node: chefzero
-
-  - node:
-      hostname: 'node2'
-      box: 'node2'
-      desc: 'a secondary node to be used by a cluster'
-      cpus: 1
-      mem: 256
-      ip: '10.10.10.13'
-      mac: '02EECB9EC1ED'
-      url: 'ubuntu_12_04_lts.box'
-      init: 'init.sh'
-      roles:
-        - 'role-runtimes'
-      run_client: false
-      chef_node: chefzero
-
-  - node:
       hostname: 'dev'
       box: 'dev'
       desc: 'develop on this box, it will not be bootstrapped by any [IPS]asS'
-      cpus: 1
-      mem: 256
+      cpus: 3
+      mem: 512
       ip: '10.10.10.14'
       mac: '02D7DAEB3F8C'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
-      roles:
-        - 'role-runtimes'
+      roles: ~
       run_client: false
       chef_node: ~
-
-  - node:
-      hostname: 'chefzero'
-      box: 'chefzero'
-      desc: 'chefzero server'
-      cpus: 1 # more than 1 cpu fails vagrant, sigh...
-      mem: 512
-      ip: '10.10.10.15'
-      mac: '024E89B94036'
-      url: 'ubuntu_12_04_lts.box'
-      init: 'init.sh'
-      roles:
-        - 'role-runtimes'
-        - 'role-chefzero'
-      run_client: false
-      chef_node: ~
-
 
 
 #
