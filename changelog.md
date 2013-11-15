@@ -1,6 +1,20 @@
 # Changelog
 
 
+== TODOs ==
+-> issue with roles not being updated
+-> remove legacy roles dir `manifests/roles`
+
+
+* v0.0.12 - "Captain"
+  - Add `role-dev-node` to bootstrap dev nodes
+  - Add the following cookbooks: `lxc`, `docker`, `etcd`, `nodejs`, `golang`, `python`
+  - Add manual bash script to install docker, however this is not recommended. Use the recipe instead, like the `role-dev-node`.
+  - Modify `dev` box to have 1024MB of ram
+  - Modify `dev` box to have 2 CPUs
+  - Modify `role-runtimes` to include `recipe[rvm::vagrant]` to help vagrant work with rvm
+
+
 * v0.0.11 - "Tree Frog"
   - Modify `chef-client` during `sync` ~~to start in daemon mode~~ (_daemon mode has a memory leak, verified via my mem profiling, it will eventually crash the system; notes added_)
   - Swap `prepare` with `sync` in the `vm:cluster` namespace
@@ -10,9 +24,6 @@
   - Integrated local roles into chef-server roles to dog food role specs
   - Add `sync` to `vm:cluster:<name>:reboot`
   - Add `sync` to `vm:cluster:<name>:rebirth`
-
-== TODOs ==
--> issue with roles not being updated
 
 
 * v0.0.10 - Hummingbird
