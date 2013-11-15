@@ -228,13 +228,14 @@ nodes:  # node registry
       hostname: 'dev'
       box: 'dev'
       desc: 'develop on this box, it will not be bootstrapped by any [IPS]asS'
-      cpus: 3
-      mem: 512
+      cpus: 2
+      mem: 1024
       ip: '10.10.10.14'
       mac: '02D7DAEB3F8C'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
-      roles: ~
+      roles:
+        - 'role-dev-node'
       run_client: false
       chef_node: ~
 

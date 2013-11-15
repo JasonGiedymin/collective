@@ -1,32 +1,44 @@
 {
-  "name": "role-runtimes",
+  "name": "role-dev-node",
   "chef_type": "role",
   "json_class": "Chef::Role",
   "default_attributes": {
   },
-  "description": "Base Runtimes bootstrap",
+  "description": "Base Dev Node Role",
   "run_list": [
     "recipe[apt]",
     "recipe[rvm::system]",
-    "recipe[rvm::vagrant]"
+    "recipe[rvm::vagrant]",
+    "recipe[java]",
+    "recipe[golang]",
+    "recipe[nodejs::install_from_binary]",
+    "recipe[nodejs::npm]",
+    "recipe[docker]",
+    "recipe[chef-client]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
+    "chef_server_url": "https://10.10.10.10",
+    "node_name": "dev-node",
+
     "rvm": {
       "rubies": [
       ],
       "global_gems": [
-        {"name": "berkshelf"}
-        {"name": "chef"}
       ]
     },
-    
-    "java" : {
+
+    "java": {
       "install_flavor": "oracle",
       "oracle": {
         "accept_oracle_download_terms": true
       },
       "jdk_version": "7"
+    },
+
+    "nodejs": {
+
     }
+
   }
 }
