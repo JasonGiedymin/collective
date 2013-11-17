@@ -7,7 +7,8 @@
   "description": "Base Runtimes bootstrap",
   "run_list": [
     "recipe[apt]",
-    "recipe[rvm::system]"
+    "recipe[rvm::system]",
+    "recipe[docker]"
   ],
   "env_run_lists" : {},
   "override_attributes": {

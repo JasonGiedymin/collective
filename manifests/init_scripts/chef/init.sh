@@ -55,4 +55,12 @@ knife cookbook list
 #   -r /home/vagrant/.chef/ \
 #   --defaults -y
 
-echo "Done."
+
+#
+# Run docker-registry
+# =============
+#
+bash /home/vagrant/manifests/init_scripts/lib/run_docker_registry.sh
+
+echo "Chef server up and running. Actions complete."
+echo

@@ -50,6 +50,7 @@ Vagrant.configure('2') do |config|
 
       # Chef Roles
       instance.vm.provision "chef_solo" do |chef|
+        chef.log_level = :debug
         chef.cookbooks_path = [cookbooks]
         chef.roles_path = roles_loc
         
