@@ -1,9 +1,22 @@
 # Changelog
 
 
-== TODOs ==
--> issue with roles not being updated
--> remove legacy roles dir `manifests/roles`
+* v0.0.13 - "Starfleet Academy"
+  - Modify vagrant chef logging mode to debug
+  - Remove legacy `roles` dir
+  - Add `manifests/init_scripts/lib`, can start moving scripts there now
+  - Add `run_docker_registry.sh` script that will safely determine if it should bootstrap
+    a new `docker-registry` by checking if it is already running
+  - Add `docker` recipe to `chefzero` role, and bootstrap `docker-registry` on
+    chefzero nodes (specificaly `10.10.10.10`). You may need to run
+    `vm:cluster:<name>:provision` if you've ran `up` on a cluster that was
+    already created and was only cycled. Fixes #24.
+  - Start of work dealing with 'unmanaged' clusters, however this feature is deferred ftm.
+
+  Notes:
+    * docker-registry cookbook is busted. I'm not confident chef should be the
+    tool to deploy dockers especially as it goes against many of the tooling
+    it is built around (ohai, libs, etc...).
 
 
 * v0.0.12 - "Captain"

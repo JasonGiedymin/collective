@@ -1,0 +1,16 @@
+{
+  "name": "role-bind9",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Bind9 role to setup DNS via bind9",
+  "run_list": [
+    "recipe[apt]"
+    
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {
+    "bind9": {}
+  }
+}

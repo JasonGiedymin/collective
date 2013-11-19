@@ -4,7 +4,7 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.11'
+  version: 'collective-v0.0.13'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -116,6 +116,7 @@ repos:
 clusters: # cluster config
   - cluster:
       name: 'base'
+      managed: true
       nodes: 
         - 'node1' # nodes first
         - 'chef' # chef last as it will then knife across nodes
@@ -124,6 +125,17 @@ clusters: # cluster config
       chef_node: 'chef'
       user: 'vagrant'
       pass: 'vagrant'
+  # - cluster:
+  #     name: 'jnet'
+  #     managed: false
+  #     nodes: # nodes that make up the cluster
+  #       - 'jnode1' # nodes first
+  #     bootstrap_nodes: # specific nodes to bootstrap
+  #       - 'jnode1'
+  #     chef_node: 'chef'
+  #     user: ~ # ignored under unmanaged
+  #     pass: ~ # ignored under unmanaged
+  #     user_pass_env: 'JNETACCESS' #used as '$JNETACCESS_[USER|PASS]'
         
 
 #
@@ -133,20 +145,20 @@ clusters: # cluster config
 #       to be present
 
 nodes:  # node registry
-  - node:
-      hostname: 'dns'
-      box: 'dns'
-      desc: 'NET layer DNS server'
-      cpus: 1
-      mem: 256
-      ip: '10.10.10.01'
-      mac: '02895C872CC5'
-      url: 'ubuntu_13_04_lts.box'
-      init: 'init.sh'
-      roles:
-        - 'internal-dns'
-      run_client: false
-      chef_node: ~
+  # - node:
+  #     hostname: 'dns'
+  #     box: 'dns'
+  #     desc: 'NET layer DNS server'
+  #     cpus: 1
+  #     mem: 256
+  #     ip: '10.10.10.01'
+  #     mac: '02895C872CC5'
+  #     url: 'ubuntu_12_04_lts.box'
+  #     init: 'init.sh'
+  #     roles:
+  #       - 'role-bind9'
+  #     run_client: false
+  #     chef_node: ~
 
   # Out of commission for now
   # - node:
@@ -241,9 +253,10 @@ nodes:  # node registry
 
 
 #
-# Unused Mac
+# Unused MACs
 # ================
-#
+#   080027EB6B03
+#   02895C872CC5
 #   024E89B94036
 #   0253943912A9
 #   0277E25CD585

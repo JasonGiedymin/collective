@@ -1,5 +1,10 @@
 site :opscode
 
+#
+# Notes:
+#   * never add docker deployment tooling, only intallation of docker/lxc runtimes
+#
+
 cookbook 'apt'
 cookbook 'git'
 cookbook 'dmg', git: "https://github.com/JasonGiedymin/dmg.git", branch: "dev/symbol_keys"
@@ -23,3 +28,5 @@ cookbook 'mysql'
 cookbook 'nginx'
 cookbook 'jenkins'
 cookbook 'bind'
+cookbook 'bind9'
+cookbook 'bind9-chroot', git: "https://github.com/tnarik/chef-cookbook_bind9-chroot.git", tag: "0.4.1"

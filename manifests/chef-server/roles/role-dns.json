@@ -1,0 +1,38 @@
+{
+  "name": "role-dns",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Configure and install Bind to function as an internal DNS server.",
+  "run_list": [
+    "recipe[bind]"
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {
+    "bind": {
+      "acl-role": "internal-acl",
+      "masters": [],
+      "ipv6_listen": false,
+      "zonetype": "slave",
+      "zonesource": "ldap",
+      "zones": [
+        "example.com",
+        "example.org"
+      ],
+      "options": [
+        "check-names slave ignore;",
+        "multi-master yes;",
+        "provide-ixfr yes;",
+        "recursive-clients 10000;",
+        "request-ixfr yes;",
+        "allow-notify { acl-dns-masters; acl-dns-slaves; };",
+        "allow-query { example-lan; localhost; };",
+        "allow-query-cache { example-lan; localhost; };",
+        "allow-recursion { example-lan; localhost; };",
+        "allow-transfer { acl-dns-masters; acl-dns-slaves; };",
+        "allow-update-forwarding { any; };"
+      ]
+    }
+  }
+}
