@@ -1,6 +1,9 @@
 # Changelog
 
 
+* v0.0.14 - Cleanup
+  - Update documentation
+
 * v0.0.13 - "Starfleet Academy"
   - Modify vagrant chef logging mode to debug
   - Remove legacy `roles` dir
@@ -8,7 +11,7 @@
   - Add `run_docker_registry.sh` script that will safely determine if it should bootstrap
     a new `docker-registry` by checking if it is already running
   - Add `docker` recipe to `chefzero` role, and bootstrap `docker-registry` on
-    chefzero nodes (specificaly `10.10.10.10`). You may need to run
+    chefzero nodes (specifically `10.10.10.10`). You may need to run
     `vm:cluster:<name>:provision` if you've ran `up` on a cluster that was
     already created and was only cycled. Fixes #24.
   - Start of work dealing with 'unmanaged' clusters, however this feature is deferred ftm.

@@ -188,7 +188,7 @@ namespace :vm do
           puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
         end
 
-        desc 'Sync a cluster by uploading and ping'
+        desc 'Sync a cluster by boostrapping, uploading and preparing'
         task :sync do
           puts "Syncing cluster..."
 
