@@ -287,7 +287,6 @@ namespace :vm do
 
           scripts = [
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force cookbooks\"",
-            "\"cd #{user_home}/manifests/chef-server/ && sudo knife role bulk delete \"*\"",
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force roles\"",
             "\"cd #{user_home}/manifests/chef-server/ && sudo knife upload -V --force nodes\""
           ]

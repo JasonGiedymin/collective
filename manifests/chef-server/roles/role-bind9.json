@@ -4,7 +4,7 @@
   "json_class": "Chef::Role",
   "default_attributes": {
   },
-  "description": "Bind9 role",
+  "description": "Bind9 role to setup DNS via bind9",
   "run_list": [
     "recipe[apt]"
     

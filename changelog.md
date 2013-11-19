@@ -1,11 +1,6 @@
 # Changelog
 
 
-== TODOs ==
--> issue with roles not being updated
--> remove legacy roles dir `manifests/roles`
-
-
 * v0.0.13 - "Starfleet Academy"
   - Modify vagrant chef logging mode to debug
   - Remove legacy `roles` dir
@@ -16,6 +11,7 @@
     chefzero nodes (specificaly `10.10.10.10`). You may need to run
     `vm:cluster:<name>:provision` if you've ran `up` on a cluster that was
     already created and was only cycled. Fixes #24.
+  - Start of work dealing with 'unmanaged' clusters, however this feature is deferred ftm.
 
   Notes:
     * docker-registry cookbook is busted. I'm not confident chef should be the
