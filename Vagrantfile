@@ -50,7 +50,7 @@ Vagrant.configure('2') do |config|
 
       # - Plugins -
       # Omnibus
-      # config.omnibus.chef_version = :latest
+      config.omnibus.chef_version = :latest
       
       # Cachier
       instance.cache.auto_detect = true
