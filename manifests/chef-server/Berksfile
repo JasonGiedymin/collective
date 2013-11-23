@@ -8,10 +8,13 @@ site :opscode
 cookbook 'apt'
 cookbook 'git'
 cookbook 'dmg', git: "https://github.com/JasonGiedymin/dmg.git", branch: "dev/symbol_keys"
+cookbook 'dpkg_autostart', git: 'https://github.com/hw-cookbooks/dpkg_autostart'
+cookbook 'build-essential'
 
 cookbook 'lxc', git: "https://github.com/hw-cookbooks/lxc.git"
 cookbook 'docker', git: 'https://github.com/bflad/chef-docker.git'
 cookbook 'etcd', git: 'https://github.com/spheromak/etcd-cookbook.git'
+cookbook 'mesos', git: 'https://github.com/everpeace/cookbook-mesos.git'
 
 cookbook 'chef-server', git: "https://github.com/JasonGiedymin/chef-server.git", branch: "fix/cache_dir_missing"
 cookbook 'chef-client'

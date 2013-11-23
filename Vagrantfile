@@ -45,8 +45,21 @@ Vagrant.configure('2') do |config|
         vb.customize ['modifyvm', :id, '--hwvirtex', 'on']
 
         # UI
-        vb.gui = node['ui']
+        vb.gui = Conversions.Boolean(node['ui'])
       end # end vbox
+
+      # - Plugins -
+      # Omnibus
+      # config.omnibus.chef_version = :latest
+      
+      # Cachier
+      instance.cache.auto_detect = true
+      instance.cache.scope = :machine # for multi-machine scope
+      instance.cache.enable :apt # turn on caches:
+      instance.cache.enable :chef
+      instance.cache.enable :gem
+      instance.cache.enable :rvm
+      instance.cache.enable :npm
 
       # Chef Roles
       instance.vm.provision "chef_solo" do |chef|

@@ -1,8 +1,45 @@
 # Changelog
 
 
-* v0.0.14 - Cleanup
+## Todo
+  * add mesos back to the role-test, and then install mesos-docker, then follow
+    the example http post
+  * start mesos master, slave, start marathon, curl tests
+  - add direct support for vagrant host
+    - add default domain, and option to specify manual
+      defaults:
+        - domain: example.com
+      - node:
+          fqdn: somehost.example.com
+          # OR
+          fqdn: ~ # empty entry, falls back on domain default (<name>.domain)
+  - SEE => https://github.com/everpeace/vagrant-mesos
+  - https://github.com/adrienthebo/vagrant-hosts
+  - https://github.com/fgrehm/vagrant-cachier
+  - PhantomJS
+  - Jasmine
+  - Guard::Jasmine
+  - Shipyard
+
+* v0.0.14 - "Shadow"
   - Update documentation
+  - Add beginning of mesos-docker work
+  - Remove legacy repos/cookbooks
+  - Add user `vagrant.d` box removal during `:cleanup`
+  - Add local `.vagrant` box removal during `:cleanup`
+  - Fix UI setting that allows vbox GUI to be shown
+  - Add `precise32` and `precise64` images from vagrantup (thus far the best images around)
+  - Add `vm:<name>:export` command that will vagrant export boxes
+  - Add `download:plugins` which will download and _install_ vagrant plugins (yeah seems confusing), will have to change this in the future.
+  - Add omnibus `:latest` definition to download latest chef
+  - Modify runlist in dev box to specify OracleJDK specific recipe
+  - Add reference docker boxes, see this [link](http://blog.phusion.nl/2013/11/08/docker-friendly-vagrant-boxes/)
+  - Add `growl` since long running jobs are so... long running
+  - Add direct support for `vagrant-cachier`, with autodetect and caching of `apt`, `npm`, `chef`, `gem`, and `rvm`
+  - Add `mesos` and `mesos-docker` to dev box
+  - Add expanded usage of growl notifications, allowing for warn, info, error, and success levels of messages
+  - Add debug level to `core.yml`, and add debug message function
+
 
 * v0.0.13 - "Starfleet Academy"
   - Modify vagrant chef logging mode to debug

@@ -9,12 +9,14 @@
     "recipe[apt]",
     "recipe[rvm::system]",
     "recipe[rvm::vagrant]",
-    "recipe[java]",
     "recipe[golang]",
     "recipe[nodejs::install_from_binary]",
     "recipe[nodejs::npm]",
     "recipe[docker]",
-    "recipe[chef-client]"
+    "recipe[chef-client]",
+    "recipe[java::oracle]",
+    "recipe[scala]",
+    "recipe[mesos::build_from_source]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
@@ -29,6 +31,7 @@
     },
 
     "java": {
+      "remove_deprecated_packages": true,
       "install_flavor": "oracle",
       "oracle": {
         "accept_oracle_download_terms": true
@@ -37,7 +40,10 @@
     },
 
     "nodejs": {
+    },
 
+    "scala": {
+      "version": "2.10.3"
     }
 
   }

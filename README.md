@@ -16,6 +16,9 @@ This app helps syncronize developers working on cluster software.
 
     bundle install
 
+    # install vagrant plug-ins; yes, slightly confusing - download|install...
+    rake download:plugins
+
     # Project deps
     rake download:gems # should just run bundle
 

@@ -7,11 +7,10 @@ import 'lib/conf.rb'
 
 module Git
   def self.clone(name, url, dir)
-    puts "-> Cloning [ #{name} via #{url} ]".light_blue
     System.shell_cmd(
       "./",
       "git clone --recursive #{url} #{dir}/#{name}",
-      "cloning repository #{url}"
+      "cloning repository #{name} via #{url}"
     )
   end
 
@@ -36,12 +35,12 @@ module Git
       if !Dir.exists?(repo_location)
         Dir.mkdir(repo_location)
       else
-        puts "Deleting existing entryity #{entry['name']}..."
+        System.msgInfo "Deleting existing entryity #{entry['name']}...", "system"
         FileUtils.rm_rf repo_location
       end
 
       # Clone
-      puts "Preparing to download entry #{entry['name']}"
+      System.msgInfo "Preparing to download entry #{entry['name']}", "system"
       Git.clone(entry['name'], entry['url'], out_location)
 
       # Checkout tag
@@ -62,7 +61,7 @@ module Git
         )
       end
 
-      puts "\n== Repo cloning complete ==".white.on_light_blue
+      System.msgSuccess "\n== Repo cloning complete ==", "system"
     end
   end
 end

@@ -1,0 +1,16 @@
+{
+  "name": "role-mesos",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Base Mesos Role",
+  "run_list": [
+    "recipe[apt]",
+    "recipe[docker]",
+    "recipe[mesos::build_from_source]"
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {
+  }
+}
