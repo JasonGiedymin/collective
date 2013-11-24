@@ -1,24 +1,49 @@
 {
-  "name": "cluster-node",
+  "name": "role-cluster-node",
   "chef_type": "role",
   "json_class": "Chef::Role",
   "default_attributes": {
   },
   "description": "Base Cluster Node Role",
   "run_list": [
-    "recipe[chef-client]"
+    "recipe[apt]",
+    "recipe[rvm::system]",
+    "recipe[rvm::vagrant]",
+    "recipe[golang]",
+    "recipe[nodejs::install_from_binary]",
+    "recipe[nodejs::npm]",
+    "recipe[docker]",
+    "recipe[chef-client]",
+    "recipe[java::oracle]",
+    "recipe[scala]",
+    "recipe[mesos::build_from_source]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
     "chef_server_url": "https://10.10.10.10",
-    "node_name": "cluster-node",
+    "node_name": "dev-node",
 
-    "java" : {
+    "rvm": {
+      "rubies": [
+      ],
+      "global_gems": [
+      ]
+    },
+
+    "java": {
       "install_flavor": "oracle",
       "oracle": {
         "accept_oracle_download_terms": true
       },
       "jdk_version": "7"
+    },
+
+    "nodejs": {
+    },
+
+    "scala": {
+      "version": "2.10.3",
+      "url": "http://www.scala-lang.org/files/archive/scala-2.10.3.tgz"
     }
 
   }

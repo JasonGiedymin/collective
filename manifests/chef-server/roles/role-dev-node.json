@@ -31,7 +31,6 @@
     },
 
     "java": {
-      "remove_deprecated_packages": true,
       "install_flavor": "oracle",
       "oracle": {
         "accept_oracle_download_terms": true
@@ -43,7 +42,8 @@
     },
 
     "scala": {
-      "version": "2.10.3"
+      "version": "2.10.3",
+      "url": "http://www.scala-lang.org/files/archive/scala-2.10.3.tgz"
     }
 
   }

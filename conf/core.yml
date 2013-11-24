@@ -219,15 +219,14 @@ nodes:  # node registry
       hostname: 'node1'
       box: 'node1'
       desc: 'a primary node to be used by a cluster'
-      cpus: 1
-      mem: 256
+      cpus: 2
+      mem: 768
       ip: '10.10.10.12'
       mac: '080027BE8715'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
         - 'cluster-node'
-        - 'role-runtimes'
       run_client: false
       chef_node: chef
 
@@ -235,14 +234,14 @@ nodes:  # node registry
       hostname: 'node2'
       box: 'node2'
       desc: 'a secondary node to be used by a cluster'
-      cpus: 1
-      mem: 256
+      cpus: 2
+      mem: 768
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
       url: 'ubuntu_12_04_lts.box'
       init: 'init.sh'
       roles:
-        - 'role-runtimes'
+        - 'cluster-node'
       run_client: false
       chef_node: chef
 
