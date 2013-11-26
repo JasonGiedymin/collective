@@ -10,7 +10,7 @@
     "recipe[docker]",
     "recipe[java::oracle]",
     "recipe[scala]",
-    "recipe[mesos::build_from_source]"
+    "recipe[maven]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
@@ -22,6 +22,14 @@
       },
       "jdk_version": "7"
     },
+
+    "maven": {
+      "version": "3",
+      "3": {
+        "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+      }
+    },
+
     "scala": {
       "version": "2.10.3",
       "url": "http://www.scala-lang.org/files/archive/scala-2.10.3.tgz"

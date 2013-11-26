@@ -2,9 +2,8 @@
 
 
 ## Todo
-  * add mesos back to the role-test, and then install mesos-docker, then follow
-    the example http post
-  * start mesos master, slave, start marathon, curl tests
+  * Hostname fails when using 13.04. Need to add 'dev.localdomain' entry in `/etc/hosts` file
+  * need to make sure export of mesos is /usr/local rather than /usr/local/bin
   - add direct support for vagrant host
     - add default domain, and option to specify manual
       defaults:
@@ -20,7 +19,7 @@
   - Jasmine
   - Guard::Jasmine
   - Shipyard
-  
+
 
 * v0.0.14 - "Shadow"
   - Update documentation
@@ -37,7 +36,7 @@
   - Add reference docker boxes, see this [link](http://blog.phusion.nl/2013/11/08/docker-friendly-vagrant-boxes/)
   - Add `growl` since long running jobs are so... long running
   - Add direct support for `vagrant-cachier`, with autodetect and caching of `apt`, `npm`, `chef`, `gem`, and `rvm`
-  - Add `mesos` and `mesos-docker` to dev box
+  - Add `mesos` and `mesos-docker` to dev box via install script (do not use cookbook just yet). Install script can install from source if using the docker reference box, or via mesosphere script when using Ubuntu 13.04.
   - Add expanded usage of growl notifications, allowing for warn, info, error, and success levels of messages
   - Add debug level to `core.yml`, and add debug message function
 

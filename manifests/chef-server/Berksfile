@@ -22,6 +22,7 @@ cookbook 'chef-client'
 cookbook 'rvm', git: "https://github.com/fnichol/chef-rvm.git"
 cookbook 'ruby_build'
 cookbook 'java'
+cookbook 'maven'
 cookbook 'scala'
 cookbook 'golang', git: 'https://github.com/NOX73/chef-golang.git'
 cookbook 'python'

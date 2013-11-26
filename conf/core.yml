@@ -55,6 +55,11 @@ downloads:
       location: 'base_boxes'
       track: false
     - file:
+      name: 'ubuntu_13_10.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box'
+      location: 'base_boxes'
+      track: false
+    - file:
       name: 'docker-reference.box'
       url: 'https://oss-binaries.phusionpassenger.com/vagrant/boxes/ubuntu-12.04.3-amd64-vbox.box'
       location: 'base_boxes'
@@ -67,6 +72,11 @@ downloads:
     - file:
       name: 'mesos_14_64.deb'
       url: 'http://downloads.mesosphere.io/master/ubuntu/13.04/mesos_0.14.2_amd64.deb'
+      location: 'downloads'
+      track: false
+    - file:
+      name: 'marathon.conf'
+      url: 'http://downloads.mesosphere.io/marathon/marathon.conf'
       location: 'downloads'
       track: false
 
@@ -267,7 +277,7 @@ nodes:  # node registry
       mem: 1024
       ip: '10.10.10.14'
       mac: '02D7DAEB3F8C'
-      url: 'docker-reference.box'
+      url: 'ubuntu_13_04_lts.box'
       init: 'init.sh'
       roles:
         - 'role-test'
