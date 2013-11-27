@@ -277,7 +277,7 @@ nodes:  # node registry
       mem: 1024
       ip: '10.10.10.14'
       mac: '02D7DAEB3F8C'
-      url: 'ubuntu_13_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
         - 'role-test'

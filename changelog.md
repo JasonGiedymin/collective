@@ -39,6 +39,8 @@
   - Add `mesos` and `mesos-docker` to dev box via install script (do not use cookbook just yet). Install script can install from source if using the docker reference box, or via mesosphere script when using Ubuntu 13.04.
   - Add expanded usage of growl notifications, allowing for warn, info, error, and success levels of messages
   - Add debug level to `core.yml`, and add debug message function
+  - Add `vm:<name>:nuke` command to Nuke a vm which will clean up all vagrant related files
+  - Add `cluster:<name>:nuke` command to run `nuke` for an entire cluster
 
 
 * v0.0.13 - "Starfleet Academy"

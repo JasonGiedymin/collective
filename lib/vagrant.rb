@@ -70,18 +70,6 @@ namespace :vm do
         local_machine_loc = "#{HOME}/.vagrant/machines/#{os}"
 
         vm_cmd('virtualbox', "box remove #{version}-#{os}", true)
-
-        # if Dir.exists?(box_loc)
-        #   FileUtils.rm_rf box_loc
-        #   puts "* deleted vagrant box at vagrant user location: #{box_loc}"
-        # end
-
-        # if Dir.exists?(local_machine_loc)
-        #   FileUtils.rm_rf local_machine_loc
-        #   puts "* deleted vagrant box at vagrant local location: #{local_machine_loc}"
-        # end
-
-        # puts "\n== command:[cleanup] on node:[#{os}] complete ==".black.on_magenta
       end
 
       desc 'Rebirth does a force destroy followed by an up'
@@ -89,6 +77,24 @@ namespace :vm do
         Rake::Task["vm:#{os}:destroy"].invoke
         Rake::Task["vm:#{os}:cleanup"].invoke
         Rake::Task["vm:#{os}:up"].invoke
+      end
+
+      desc "Nukes vagrant files and cache"
+      task :nuke do
+        Rake::Task["vm:#{os}:destroy"].invoke
+        Rake::Task["vm:#{os}:cleanup"].invoke
+
+        if Dir.exists?(box_loc)
+          FileUtils.rm_rf box_loc
+          System.msgInfo "* deleted vagrant box at vagrant user location: #{box_loc}", os
+        end
+
+        if Dir.exists?(local_machine_loc)
+          FileUtils.rm_rf local_machine_loc
+          System.msgInfo "* deleted vagrant box at vagrant local location: #{local_machine_loc}", os
+        end
+
+        System.msgSuccess "\n== command:[cleanup] on node:[#{os}] complete ==", os
       end
 
       desc "Reboots the #{os} vm"
@@ -246,6 +252,17 @@ namespace :vm do
           end
 
           System.msgSuccess "\n== Cluster:[#{cluster_name}] destroyed", "cluster"
+        end
+
+        desc 'Nuke an entire cluster and clean up'
+        task :nuke do
+          System.msgInfo "\n== Nukinging cluster:[#{cluster_name}]", "cluster"
+
+          cluster_nodes.each do |os|
+            Rake::Task["vm:#{os}:nuke"].invoke
+          end
+
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] nuked", "cluster"
         end
 
         desc 'Reboots an entire cluster'
