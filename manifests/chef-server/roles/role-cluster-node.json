@@ -6,17 +6,17 @@
   },
   "description": "Base Cluster Node Role",
   "run_list": [
-    "recipe[apt]",
+    "recipe[chef-client]",
+    "recipe[apt::default]",
     "recipe[rvm::system]",
     "recipe[rvm::vagrant]",
-    "recipe[golang]",
     "recipe[nodejs::install_from_binary]",
     "recipe[nodejs::npm]",
+    "recipe[golang]",
     "recipe[docker]",
-    "recipe[chef-client]",
     "recipe[java::oracle]",
     "recipe[scala]",
-    "recipe[mesos::build_from_source]"
+    "recipe[maven]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
@@ -38,7 +38,11 @@
       "jdk_version": "7"
     },
 
-    "nodejs": {
+    "maven": {
+      "version": "3",
+      "3": {
+        "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+      }
     },
 
     "scala": {

@@ -13,10 +13,10 @@
 #     exit;
 # fi;
 
-CHEF_USER=vagrant
-CHEF_IP="10.10.10.10"
-KNIFE=/opt/vagrant_ruby/bin/knife
-CHEF_USER_HOME=/home/vagrant
+export CHEF_USER=vagrant
+export CHEF_IP="10.10.10.10"
+export KNIFE=/opt/vagrant_ruby/bin/knife
+export CHEF_USER_HOME=/home/vagrant
 
 echo
 echo "****************************"

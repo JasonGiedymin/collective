@@ -1,6 +1,13 @@
 #!/bin/bash
 
 #
+# Incudes
+# =============
+#
+. /home/vagrant/manifests/init_scripts/lib_functions.sh
+
+
+#
 # Init Base
 # =============
 #

@@ -16,41 +16,26 @@
 # Great tutorial: https://github.com/mesosphere/mesos-docker/blob/master/tutorial.md
 #
 
+TEMP_DIR=/home/vagrant/temp
 VER_MESOS="0.14.2"
-VER_MARATHON="0.2.2"
+MESOS_DIR=$TEMP_DIR/mesos-$VER_MESOS
 
-sudo apt-get update
 
-# sudo apt-get install -y libcppunit-dev libunwind7-dev \
-# python-setuptools gcc g++ ccache libltdl-dev \
-# java7-runtime-headless libtool autoconf autopoint \
-# autotools-dev make python-dev
-
-# Bare minimum required
-sudo apt-get install -y g++ gcc ccache python-setuptools python-dev \
-libcurl4-openssl-dev libunwind7-dev zookeeper-bin zookeeperd
-
-# adds which are temporary for now
-sudo apt-get install -y screen unzip curl
-
-sudo easy_install httpie
-
-if [ ! -d temp ]; then
+if [ ! -d $TEMP_DIR ]; then
   echo "== Creating temp dir... =="
-  mkdir temp
+  mkdir $TEMP_DIR
 fi
 
-cd temp
-
-if [ ! -d ~/temp/mesos ]; then
+if [ ! -d $MESOS_DIR ]; then
   echo "== Downloading mesos... =="
-  curl http://apache.mirrors.pair.com/mesos/$VER_MESOS/mesos-$VER_MESOS.tar.gz > ~/temp/mesos.tar.gz
+  curl http://apache.mirrors.pair.com/mesos/$VER_MESOS/mesos-$VER_MESOS.tar.gz > $TEMP_DIR/mesos-$VER_MESOS.tar.gz
 
   echo "== Un-compressing tar... =="
+  cd $TEMP_DIR
   tar -xvf mesos.tar.gz
 fi;
 
-cd mesos-$VER_MESOS
+cd $MESOS_DIR
 
 echo "== Configure... =="
 ./configure --disable-perftools
@@ -70,51 +55,15 @@ if [ ! -e /usr/lib/libmesos-$VER_MESOS.so ]; then
   sudo mkdir -p /usr/share/doc/mesos /etc/default /etc/mesos /var/log/mesos
 fi
 
-cd ~/temp
-
-echo "== Cloning Marathon... =="
-git clone https://github.com/mesosphere/marathon.git
-cd marathon
-
-echo "== Building Marathon... =="
-mvn clean
-mvn compile
-mvn package
-
-
-cd target
-
-echo "== Preparing marathon dest... =="
-if [ ! -d /opt/marathon ]; then
-  sudo mkdir -p /opt/marathon/ 
+if [ ! -e /etc/init/mesos-master.conf ]; then
+  sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/master.upstart \
+  /etc/init/mesos-master.conf
 fi
 
-echo "== Preparing marathon dest etc... =="
-if [ ! -d /etc/marathon ]; then
-  sudo mkdir -p /etc/marathon
+if [ ! -e /etc/init/mesos-slave.conf ]; then
+  sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/slave.upstart \
+  /etc/init/mesos-slave.conf
 fi
-
-sudo cp -f ~/temp/marathon/target/marathon-$VER_MARATHON-SNAPSHOT-jar-with-dependencies.jar /opt/marathon/marathon.jar
-sudo chmod ug+rx /opt/marathon/marathon.jar
-
-sudo cp -f /home/vagrant/manifests/downloads/marathon.conf /etc/init/marathon.conf
-
-echo "== Preparing mesos-docker =="
-if [ /var/lib/mesos ]; then
-  sudo mkdir -p /var/lib/mesos
-fi
-
-if [ /var/lib/mesos/executors ]; then
-  sudo mkdir -p /var/lib/mesos/executors
-fi
-
-echo "== Installing mesos-docker =="
-sudo cp -f /home/vagrant/manifests/repos/mesos-docker/bin/mesos-docker /var/lib/mesos/executors/docker
-
-sudo restart zookeeper
-sudo restart mesos-local
-sudo restart marathon
-
 
 # Mesos UI
 # http://10.10.10.14:5050/#/

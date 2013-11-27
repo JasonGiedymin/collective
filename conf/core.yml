@@ -101,6 +101,12 @@ repos:
     tag: ''
     post_install: ''
     location: ''
+  - repo:
+    name: 'mesos-deb-packaging'
+    url: 'https://github.com/deric/mesos-deb-packaging.git'
+    tag: ''
+    post_install: ''
+    location: ''
   # - repo:
   #   name: 'bind'
   #   url: 'https://github.com/atomic-penguin/cookbook-bind.git'
@@ -233,10 +239,10 @@ nodes:  # node registry
       mem: 768
       ip: '10.10.10.12'
       mac: '080027BE8715'
-      url: 'ubuntu_12_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'cluster-node'
+        - 'role-cluster-node'
       run_client: false
       chef_node: chef
 
@@ -248,10 +254,10 @@ nodes:  # node registry
       mem: 768
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
-      url: 'ubuntu_12_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'cluster-node'
+        - 'role-cluster-node'
       run_client: false
       chef_node: chef
 

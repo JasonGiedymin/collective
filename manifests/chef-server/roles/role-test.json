@@ -7,6 +7,8 @@
   "description": "Test Role",
   "run_list": [
     "recipe[apt::default]",
+    "recipe[rvm::system]",
+    "recipe[rvm::vagrant]",
     "recipe[docker]",
     "recipe[java::oracle]",
     "recipe[scala]",
@@ -24,6 +26,8 @@
     },
 
     "maven": {
+      "setup_bin": true,
+      "m2_home": "/usr/bin/maven",
       "version": "3",
       "3": {
         "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
