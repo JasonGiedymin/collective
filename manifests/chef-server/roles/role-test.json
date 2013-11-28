@@ -9,6 +9,10 @@
     "recipe[apt::default]",
     "recipe[rvm::system]",
     "recipe[rvm::vagrant]",
+    "recipe[golang]",
+    "recipe[nodejs::install_from_binary]",
+    "recipe[nodejs::npm]",
+    "recipe[chef-client]",
     "recipe[docker]",
     "recipe[java::oracle]",
     "recipe[scala]",
@@ -16,6 +20,15 @@
   ],
   "env_run_lists" : {},
   "override_attributes": {
+
+    "rvm": {
+      "rubies": [
+      ],
+      "global_gems": [
+        {"name": "chef"},
+        {"name": "chef-zero"}
+      ]
+    },
     
     "java": {
       "install_flavor": "oracle",
