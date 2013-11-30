@@ -16,54 +16,126 @@
 # Great tutorial: https://github.com/mesosphere/mesos-docker/blob/master/tutorial.md
 #
 
-TEMP_DIR=/home/vagrant/temp
-VER_MESOS="0.14.2"
-MESOS_DIR=$TEMP_DIR/mesos-$VER_MESOS
+
+# Module Info
+MODULE_VERSION_SRC="0.14.2"
+MODULE_VERSION_DEB="0.16.0"
+MODULE_SRC_HOME=$TEMP_DIR/mesos-$MODULE_VERSION_SRC
+MODULE_HOME=$TEMP_DIR/mesos-deb-packaging
+MODULE_CHECK_FILE=/usr/lib/libmesos-$MODULE_VERSION_SRC.so
+MODULE_COMPILED_FILENAME=mesos-$MODULE_VERSION_DEB.deb
+MODULE_UPLOAD_PATH=$HOME_RESOURCES/mesos
+MODULE_UPLOAD_FILE=$MODULE_HOME/$MODULE_COMPILED_FILENAME
 
 
-if [ ! -d $TEMP_DIR ]; then
-  echo "== Creating temp dir... =="
-  mkdir $TEMP_DIR
-fi
+function installDeps() {
+  sudo apt-get install -y default-jre-headless default-jre python-setuptools zookeeperd
+}
 
-if [ ! -d $MESOS_DIR ]; then
-  echo "== Downloading mesos... =="
-  curl http://apache.mirrors.pair.com/mesos/$VER_MESOS/mesos-$VER_MESOS.tar.gz > $TEMP_DIR/mesos-$VER_MESOS.tar.gz
+# mesos gets cloned twice, manually and by the deb-packager
+# the deb-packager is being evaulated and I'm not ready
+# to abandon manual compile
+function prepare() {
+  # gem install fpm
 
-  echo "== Un-compressing tar... =="
-  cd $TEMP_DIR
-  tar -xvf mesos.tar.gz
-fi;
+  if [ ! -d $TEMP_DIR ]; then
+    echo "== Creating temp dir... =="
+    mkdir $TEMP_DIR
+  fi
 
-cd $MESOS_DIR
+  if [ ! -d $MODULE_SRC_HOME ]; then
+    echo "== Downloading mesos... =="
+    curl http://apache.mirrors.pair.com/mesos/$MODULE_VERSION_SRC/mesos-$MODULE_VERSION_SRC.tar.gz > $TEMP_DIR/mesos-$MODULE_VERSION_SRC.tar.gz
 
-echo "== Configure... =="
-./configure --disable-perftools
+    echo "== Un-compressing tar... =="
+    cd $TEMP_DIR
+    tar -xvf mesos-$MODULE_VERSION_SRC.tar.gz
+  fi;
 
-echo "== Making... =="
-make clean
-make
-sudo make uninstall
-sudo make install
+  local deb_package_repo=$TEMP_DIR/mesos-deb-packaging
+  if [ ! -d $deb_package_repo ]; then
+    echo "== Cloning package repo... =="
+    git clone https://github.com/deric/mesos-deb-packaging.git $deb_package_repo
+  fi
+}
 
-if [ ! -e /usr/lib/libmesos-$VER_MESOS.so ]; then
-  echo "== Linking shared lib... =="
-  sudo ln -s /usr/local/lib/libmesos-$VER_MESOS.so /usr/lib/libmesos-$VER_MESOS.so
-  sudo ln -s /usr/local/bin/mesos* /usr/local/
+function compileDeb() {
+  
+  if [ -e $HOME_RESOURCES/mesos/$MODULE_COMPILED_FILENAME ]; then
+    dpkg -i $HOME_RESOURCES/mesos/$MODULE_COMPILED_FILENAME
+  else
+    cd $MODULE_HOME
+    ./build_mesos
 
-  echo "== Also creating dependencies for upstart and friends... =="
-  sudo mkdir -p /usr/share/doc/mesos /etc/default /etc/mesos /var/log/mesos
-fi
+    mv mesos*.deb mesos-$MODULE_VERSION_DEB.deb
 
-if [ ! -e /etc/init/mesos-master.conf ]; then
-  sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/master.upstart \
-  /etc/init/mesos-master.conf
-fi
+    dpkg -i $MODULE_UPLOAD_FILE
 
-if [ ! -e /etc/init/mesos-slave.conf ]; then
-  sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/slave.upstart \
-  /etc/init/mesos-slave.conf
-fi
+    if [ -e $MODULE_UPLOAD_FILE ]; then
+      upload $MODULE_UPLOAD_FILE $MODULE_UPLOAD_PATH $MODULE_COMPILED_FILENAME
+    fi
+  fi
+}
+
+function compileSrc() {
+  cd $MODULE_SRC_HOME
+
+  echo "== Configure... =="
+  ./configure --disable-perftools
+
+  echo "== Making... =="
+  make clean
+  make
+  sudo make uninstall
+  sudo make install
+}
+
+function compile() {
+  compileDeb
+}
+
+function linkSrc() {
+  if [ ! -e /usr/lib/libmesos-$MODULE_VERSION_SRC.so ]; then
+    echo "== Linking shared lib... =="
+    sudo ln -s -f /usr/local/lib/libmesos-$MODULE_VERSION_SRC.so /usr/lib/libmesos-$MODULE_VERSION_SRC.so
+    sudo ln -s -f /usr/local/bin/mesos* /usr/local/
+
+    echo "== Also creating dependencies for upstart and friends... =="
+    sudo mkdir -p /usr/share/doc/mesos /etc/default /etc/mesos /var/log/mesos
+  fi
+
+  if [ ! -e /etc/init/mesos-master.conf ]; then
+    sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/master.upstart \
+    /etc/init/mesos-master.conf
+  fi
+
+  if [ ! -e /etc/init/mesos-slave.conf ]; then
+    sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/slave.upstart \
+    /etc/init/mesos-slave.conf
+  fi
+}
+
+function link() {
+  linkSrc
+}
+
+function install_module() {
+  if [ ! -e $MODULE_CHECK_FILE ]; then
+    echo "== Installing Mesos... =="
+    installDeps
+    prepare
+    compile
+    # link
+  else
+    echo "== Mesos already installed, skipping. =="
+  fi  
+}
+
+gem install fpm
+install_module
+# which gem
+# which fpm
+
 
 # Mesos UI
 # http://10.10.10.14:5050/#/

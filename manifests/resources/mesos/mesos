@@ -1,0 +1,3 @@
+LOGS=/var/log/mesos
+ULIMIT="-n 8192"
+MASTER=127.0.0.1:5050

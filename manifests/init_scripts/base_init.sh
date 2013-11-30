@@ -9,7 +9,8 @@ sudo apt-get update
 sudo apt-get install -y language-pack-en
 sudo apt-get install -y git vim curl ssh ccache
 sudo apt-get install -y g++ gcc ccache python-setuptools python-dev \
-libcurl4-openssl-dev libunwind7-dev zookeeper-bin zookeeperd
+libcurl4-openssl-dev libunwind7-dev zookeeper-bin zookeeperd \
+libsasl2-2 libsasl2-dev
 sudo apt-get install -y screen unzip curl
 
 sudo apt-get autoclean
@@ -45,6 +46,7 @@ sudo bash /home/vagrant/manifests/init_scripts/chef_prep.sh
 #
 MVN=/usr/local/maven-3.1.0/bin/mvn
 MVN_BIN=/usr/bin/mvn
-if [ -e $MVN_BIN ]; then
+if [ ! -e $MVN_BIN ]; then
   sudo ln -s $MVN $MVN_BIN
+  echo "=> Maven linked."
 fi

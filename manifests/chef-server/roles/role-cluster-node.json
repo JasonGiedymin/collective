@@ -6,7 +6,6 @@
   },
   "description": "Base Cluster Node Role",
   "run_list": [
-    "recipe[chef-client]",
     "recipe[apt::default]",
     "recipe[rvm::system]",
     "recipe[rvm::vagrant]",
@@ -17,6 +16,7 @@
     "recipe[java::oracle]",
     "recipe[scala]",
     "recipe[maven]"
+    "recipe[chef-client]",
   ],
   "env_run_lists" : {},
   "override_attributes": {
@@ -27,6 +27,8 @@
       "rubies": [
       ],
       "global_gems": [
+        {"name": "chef"},
+        {"name": "chef-zero"}
       ]
     },
 

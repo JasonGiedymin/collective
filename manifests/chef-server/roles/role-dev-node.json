@@ -13,7 +13,6 @@
     "recipe[nodejs::install_from_binary]",
     "recipe[nodejs::npm]",
     "recipe[docker]",
-    "recipe[chef-client]",
     "recipe[java::oracle]",
     "recipe[scala]",
     "recipe[mesos::build_from_source]"
@@ -27,6 +26,8 @@
       "rubies": [
       ],
       "global_gems": [
+        {"name": "chef"},
+        {"name": "chef-zero"}
       ]
     },
 
