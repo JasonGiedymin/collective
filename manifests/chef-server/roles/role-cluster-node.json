@@ -20,18 +20,37 @@
   ],
   "env_run_lists" : {},
   "override_attributes": {
-    "chef_server_url": "https://10.10.10.10",
-    "node_name": "dev-node",
 
     "rvm": {
       "rubies": [
+        "ruby-1.9.3-p327"
       ],
       "global_gems": [
         {"name": "chef"},
-        {"name": "chef-zero"}
-      ]
+        {"name": "chef-zero"},
+        {"name": "fpm"}
+      ],
+      "user_global_gems": [
+        {"name": "chef"},
+        {"name": "chef-zero"},
+        {"name": "fpm"}
+      ],
+      "user_installs": [
+        { "user" : "vagrant",
+          "default_ruby": "ruby-1.9.3-p327",
+          "rvm_gem_options" : "",
+          "global_gems"     : [
+            {"name": "fpm"}
+          ]
+        }
+      ],
+      "gems":{
+        "ruby-1.9.3-p327":[
+          {"name": "fpm"}
+        ]
+      }
     },
-
+    
     "java": {
       "install_flavor": "oracle",
       "oracle": {
@@ -41,6 +60,8 @@
     },
 
     "maven": {
+      "setup_bin": true,
+      "m2_home": "/usr/bin/maven",
       "version": "3",
       "3": {
         "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"

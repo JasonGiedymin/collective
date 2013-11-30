@@ -41,8 +41,8 @@
   - Add debug level to `core.yml`, and add debug message function
   - Add `vm:<name>:nuke` command to Nuke a vm which will clean up all vagrant related files
   - Add `cluster:<name>:nuke` command to run `nuke` for an entire cluster
-  - Add `install_mesos.sh` to install mesos from source
-  - Add `install_marathon.sh` to install mesos marathon from source
+  - Add `install_mesos.sh` to install mesos from source or deb package
+  - Add `install_marathon.sh` to install mesos marathon from source or jar package
   - Add `install_mesos_docker.sh` to install mesos docker executor from source
   - Add `install_collective.sh` to install mesos, marathon, and mesos-docker
   - Add `mesos-deb-packaging` to repos

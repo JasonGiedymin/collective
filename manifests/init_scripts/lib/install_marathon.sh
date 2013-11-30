@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+# Far simpler script than install_mesos
+# This script will install the jar if available
+# otherwise, it will compile it and store it
+# for future use.
+# Script will also copy configs over.
+#
+
 
 #
 # Incudes
@@ -34,11 +42,14 @@ function compile() {
     git clone https://github.com/mesosphere/marathon.git $MARATHON_DIR
   fi
 
-  echo "== Building Marathon... =="
-  cd $MARATHON_DIR
-  mvn clean
-  mvn compile
-  mvn package
+  local pre_packaged_jar=$MODULE_UPLOAD_PATH/$MODULE_COMPILED_FILENAME
+  if [ ! -e $pre_packaged_jar ]; then
+    echo "== Building Marathon... =="
+    cd $MARATHON_DIR
+    mvn clean
+    mvn compile
+    mvn package
+  fi
 }
 
 function linkSrc() {
@@ -46,14 +57,7 @@ function linkSrc() {
 
   sudo cp -f $1 /opt/marathon/marathon.jar
   sudo chmod ug+rx /opt/marathon/marathon.jar
-
-  local marathon_conf=/home/vagrant/manifests/downloads/marathon.conf
-  if [ ! -e $marathon_conf ]; then
-    echo "ERROR: Could not find $marathon_conf, this is required!"
-    exit 1
-  else
-    sudo cp -f $marathon_conf /etc/init/marathon.conf  
-  fi
+  sudo cp -Rf $MODULE_UPLOAD_PATH/ubuntu /
 }
 
 function link() {

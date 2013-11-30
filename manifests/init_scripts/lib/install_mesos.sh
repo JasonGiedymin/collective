@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+#
+# This script installs Mesos, Marathon from source
+#
+# Note: do not use ccache with mesos :-)
+# 
 
 #
 # Incudes
@@ -7,15 +13,16 @@
 . /home/vagrant/manifests/init_scripts/lib_functions.sh
 
 
-#
-# This script installs Mesos, Marathon from source
-#
 # Great resource for starting mesos + zookeeper
 # http://mesosphere.io/2013/08/01/distributed-fault-tolerant-framework-apache-mesos/
 #
 # Great tutorial: https://github.com/mesosphere/mesos-docker/blob/master/tutorial.md
 #
+# Another: http://ampcamp.berkeley.edu/3/exercises/index.html
+#          http://ampcamp.berkeley.edu/3/exercises/mesos.html
 
+USE_SRC=false # go compiled, src building takes forever
+FORCE_LINK=true
 
 # Module Info
 MODULE_VERSION_SRC="0.14.2"
@@ -30,6 +37,7 @@ MODULE_UPLOAD_FILE=$MODULE_HOME/$MODULE_COMPILED_FILENAME
 
 function installDeps() {
   sudo apt-get install -y default-jre-headless default-jre python-setuptools zookeeperd
+  gem install fpm
 }
 
 # mesos gets cloned twice, manually and by the deb-packager
@@ -81,7 +89,7 @@ function compileSrc() {
   cd $MODULE_SRC_HOME
 
   echo "== Configure... =="
-  ./configure --disable-perftools
+  ./configure # --disable-perftools # perftools must be disabled for Fedora/Centos branch
 
   echo "== Making... =="
   make clean
@@ -94,7 +102,7 @@ function compile() {
   compileDeb
 }
 
-function linkSrc() {
+function linkLib() {
   if [ ! -e /usr/lib/libmesos-$MODULE_VERSION_SRC.so ]; then
     echo "== Linking shared lib... =="
     sudo ln -s -f /usr/local/lib/libmesos-$MODULE_VERSION_SRC.so /usr/lib/libmesos-$MODULE_VERSION_SRC.so
@@ -103,38 +111,56 @@ function linkSrc() {
     echo "== Also creating dependencies for upstart and friends... =="
     sudo mkdir -p /usr/share/doc/mesos /etc/default /etc/mesos /var/log/mesos
   fi
-
-  if [ ! -e /etc/init/mesos-master.conf ]; then
-    sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/master.upstart \
-    /etc/init/mesos-master.conf
-  fi
-
-  if [ ! -e /etc/init/mesos-slave.conf ]; then
-    sudo cp /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/slave.upstart \
-    /etc/init/mesos-slave.conf
-  fi
 }
 
-function link() {
-  linkSrc
+function linkSrc() {
+  linkLib
+  
+  safeCopy /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/master.upstart \
+  /etc/init/mesos-master.conf
+
+  safeCopy /home/vagrant/manifests/repos/mesos-deb-packaging/ubuntu/slave.upstart \
+  /etc/init/mesos-slave.conf
+
+}
+
+function linkDeb() {
+  linkLib
+
+  # Blanket copy ubuntu config to root
+  sudo cp -Rf $MODULE_UPLOAD_PATH/ubuntu/* /
 }
 
 function install_module() {
-  if [ ! -e $MODULE_CHECK_FILE ]; then
-    echo "== Installing Mesos... =="
+  if [ ! -h $MODULE_CHECK_FILE ]; then
     installDeps
     prepare
-    compile
-    # link
+
+    if [ $USE_SRC == true ]; then
+      echo "== Installing Mesos via SRC... =="
+      compileSrc
+      linkSrc
+    else
+      echo "== Installing Mesos via DEB... =="
+      compileDeb
+      linkDeb
+    fi
+
   else
     echo "== Mesos already installed, skipping. =="
+
+    # Force Actions
+    if ( $USE_SRC == true && $FORCE_LINK == true ); then
+      echo "== FORCE linking Mesos via SRC... =="
+      linkSrc
+    else
+      echo "== FORCE linking Mesos via DEB... =="
+      linkDeb
+    fi    
   fi  
 }
 
-gem install fpm
 install_module
-# which gem
-# which fpm
 
 
 # Mesos UI

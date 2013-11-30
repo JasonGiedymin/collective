@@ -1,0 +1,5 @@
+LOGS=/var/log/mesos
+ULIMIT="-n 8192"
+ZK="zk://10.10.10.14:2181/mesos"
+MASTER="zk://10.10.10.14:2181/mesos"
+OPTS="--log_dir=$LOGS"

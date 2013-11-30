@@ -52,10 +52,16 @@ function upload() {
   fi
 }
 
-function serviceRestart() {
+function safeCopy() {
+  if [ ! -e $2 ]; then
+    sudo cp $1 $2
+  fi
+}
+
+function serviceAction() {
   if [ -e /etc/init/$1.conf ]; then
-    sudo service $1 restart
-    echo "== $1 should now be running =="
+    sudo service $1 $2
+    echo "== action $2 on $1 complete =="
   fi;  
 }
 
