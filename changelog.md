@@ -46,6 +46,9 @@
   - Add `install_mesos_docker.sh` to install mesos docker executor from source
   - Add `install_collective.sh` to install mesos, marathon, and mesos-docker
   - Add `mesos-deb-packaging` to repos
+  - Fix chef roles to properly install dependencies: `role-cluster-node`, `role-dev-node`, `role-test`,
+  - Remove un-necessary roles
+  - Add `upload`, `safeCopy`, `safeSource`, `safeAction` functions to `lib_functions.sh`
 
 
 * v0.0.13 - "Starfleet Academy"

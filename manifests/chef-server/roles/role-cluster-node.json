@@ -7,8 +7,8 @@
   "description": "Base Cluster Node Role",
   "run_list": [
     "recipe[apt::default]",
-    "recipe[rvm::system]",
     "recipe[rvm::vagrant]",
+    "recipe[rvm::system]",
     "recipe[nodejs::install_from_binary]",
     "recipe[nodejs::npm]",
     "recipe[golang]",
@@ -16,38 +16,23 @@
     "recipe[java::oracle]",
     "recipe[scala]",
     "recipe[maven]"
-    "recipe[chef-client]",
   ],
   "env_run_lists" : {},
   "override_attributes": {
-
     "rvm": {
       "rubies": [
-        "ruby-1.9.3-p327"
+        "1.9.3"
       ],
-      "global_gems": [
-        {"name": "chef"},
-        {"name": "chef-zero"},
-        {"name": "fpm"}
-      ],
-      "user_global_gems": [
-        {"name": "chef"},
-        {"name": "chef-zero"},
-        {"name": "fpm"}
-      ],
-      "user_installs": [
-        { "user" : "vagrant",
-          "default_ruby": "ruby-1.9.3-p327",
-          "rvm_gem_options" : "",
-          "global_gems"     : [
-            {"name": "fpm"}
-          ]
-        }
-      ],
+      "default_ruby": "ruby-1.9.3",
+      "user_default_ruby": "ruby-1.9.3",
       "gems":{
-        "ruby-1.9.3-p327":[
+        "1.9.3":[
           {"name": "fpm"}
         ]
+      },
+      "vagrant" : {
+        "system_chef_solo" : "/opt/chef/bin/chef-solo",
+        "system_chef_client" : "/opt/chef/bin/chef-client"
       }
     },
     

@@ -58,6 +58,12 @@ function safeCopy() {
   fi
 }
 
+function safeSource() {
+  if [ -e $1 ]; then
+    source $1
+  fi
+}
+
 function serviceAction() {
   if [ -e /etc/init/$1.conf ]; then
     sudo service $1 $2

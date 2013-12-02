@@ -22,7 +22,7 @@
 #          http://ampcamp.berkeley.edu/3/exercises/mesos.html
 
 USE_SRC=false # go compiled, src building takes forever
-FORCE_LINK=true
+FORCE_LINK=true # copy over upstart conf every time
 
 # Module Info
 MODULE_VERSION_SRC="0.14.2"
@@ -44,7 +44,6 @@ function installDeps() {
 # the deb-packager is being evaulated and I'm not ready
 # to abandon manual compile
 function prepare() {
-  # gem install fpm
 
   if [ ! -d $TEMP_DIR ]; then
     echo "== Creating temp dir... =="

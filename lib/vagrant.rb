@@ -81,6 +81,10 @@ namespace :vm do
 
       desc "Nukes vagrant files and cache"
       task :nuke do
+        vagrant_home = Global::Settings.locations['vagrant_home']
+        box_loc = "#{vagrant_home}/boxes/#{version}-#{os}"
+        local_machine_loc = "#{HOME}/.vagrant/machines/#{os}"
+
         Rake::Task["vm:#{os}:destroy"].invoke
         Rake::Task["vm:#{os}:cleanup"].invoke
 
@@ -321,6 +325,7 @@ namespace :vm do
             node_box = nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
             script = "\"sudo chef-client\"" # -d daemon mode has a memory leak
             command = "ssh #{node} -c #{script}"
+            puts "==> #{command}"
             vm_cmd('', command, true)
 
             System.msgSuccess "\n== chef-client prepared on cluster:[#{cluster_name}], node:[#{node}] complete ==", node

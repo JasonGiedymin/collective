@@ -16,11 +16,14 @@ cookbook 'docker', git: 'https://github.com/bflad/chef-docker.git'
 cookbook 'etcd', git: 'https://github.com/spheromak/etcd-cookbook.git'
 cookbook 'mesos', git: 'https://github.com/everpeace/cookbook-mesos.git'
 
+
+cookbook 'ruby_build'
+cookbook 'rvm', git: "https://github.com/fnichol/chef-rvm.git"
+cookbook 'rbenv', git: "https://github.com/fnichol/chef-rbenv.git", ref: "v0.7.2"
+
 cookbook 'chef-server', git: "https://github.com/JasonGiedymin/chef-server.git", branch: "fix/cache_dir_missing"
 cookbook 'chef-client'
 
-cookbook 'rvm', git: "https://github.com/fnichol/chef-rvm.git"
-cookbook 'ruby_build'
 cookbook 'java'
 cookbook 'maven'
 cookbook 'scala'

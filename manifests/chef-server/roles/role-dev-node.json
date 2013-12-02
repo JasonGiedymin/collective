@@ -6,31 +6,36 @@
   },
   "description": "Base Dev Node Role",
   "run_list": [
-    "recipe[apt]",
-    "recipe[rvm::system]",
+    "recipe[apt::default]",
     "recipe[rvm::vagrant]",
-    "recipe[golang]",
+    "recipe[rvm::system]",
     "recipe[nodejs::install_from_binary]",
     "recipe[nodejs::npm]",
+    "recipe[golang]",
     "recipe[docker]",
     "recipe[java::oracle]",
     "recipe[scala]",
-    "recipe[mesos::build_from_source]"
+    "recipe[maven]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
-    "chef_server_url": "https://10.10.10.10",
-    "node_name": "dev-node",
-
     "rvm": {
       "rubies": [
+        "1.9.3"
       ],
-      "global_gems": [
-        {"name": "chef"},
-        {"name": "chef-zero"}
-      ]
+      "default_ruby": "ruby-1.9.3",
+      "user_default_ruby": "ruby-1.9.3",
+      "gems":{
+        "1.9.3":[
+          {"name": "fpm"}
+        ]
+      },
+      "vagrant" : {
+        "system_chef_solo" : "/opt/chef/bin/chef-solo",
+        "system_chef_client" : "/opt/chef/bin/chef-client"
+      }
     },
-
+    
     "java": {
       "install_flavor": "oracle",
       "oracle": {
@@ -39,7 +44,13 @@
       "jdk_version": "7"
     },
 
-    "nodejs": {
+    "maven": {
+      "setup_bin": true,
+      "m2_home": "/usr/bin/maven",
+      "version": "3",
+      "3": {
+        "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+      }
     },
 
     "scala": {

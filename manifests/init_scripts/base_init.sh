@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#
+# Incudes
+# =============
+#
+. /home/vagrant/manifests/init_scripts/lib_functions.sh
+
 
 #
 # Clean the house before the guests arrive...
@@ -28,6 +34,15 @@ sudo bash /home/vagrant/manifests/init_scripts/modify_sshd_config.sh
 
 
 #
+# Install Ruby
+# =============
+#
+# sudo bash /home/vagrant/manifests/init_scripts/lib/install_rvm.sh "stable"
+# sudo bash /home/vagrant/manifests/init_scripts/lib/install_ruby.sh "1.9.3"
+# rvm use ruby-1.9.3 --default
+
+
+#
 # Modify RCs
 # =============
 #
@@ -46,7 +61,7 @@ sudo bash /home/vagrant/manifests/init_scripts/chef_prep.sh
 #
 MVN=/usr/local/maven-3.1.0/bin/mvn
 MVN_BIN=/usr/bin/mvn
-if [ ! -e $MVN_BIN ]; then
-  sudo ln -s $MVN $MVN_BIN
+if [ ! -h $MVN_BIN ]; then
+  sudo ln -s -f $MVN $MVN_BIN
   echo "=> Maven linked."
 fi

@@ -15,6 +15,8 @@
 . /home/vagrant/manifests/init_scripts/lib_functions.sh
 
 
+FORCE_LINK=true # copy over upstart conf every time
+
 TEMP_DIR=$HOME_CHEF_USER/temp
 VER_MARATHON="0.2.2"
 MARATHON_DIR=$TEMP_DIR/marathon
@@ -37,8 +39,10 @@ function prepare() {
 }
 
 function compile() {
-  echo "== Cloning Marathon... =="
   if [ ! -e $MARATHON_DIR ]; then
+    # clone here just in case we want to run tests
+    # even though install proceeds with pre-packaged jar
+    echo "== Cloning Marathon... =="
     git clone https://github.com/mesosphere/marathon.git $MARATHON_DIR
   fi
 
@@ -53,11 +57,11 @@ function compile() {
 }
 
 function linkSrc() {
-  cd $MARATHON_DIR/target
-
   sudo cp -f $1 /opt/marathon/marathon.jar
   sudo chmod ug+rx /opt/marathon/marathon.jar
-  sudo cp -Rf $MODULE_UPLOAD_PATH/ubuntu /
+
+  # Blanket copy ubuntu config to root
+  sudo cp -Rf $MODULE_UPLOAD_PATH/ubuntu/* /
 }
 
 function link() {
@@ -77,4 +81,8 @@ if [ ! -e $MODULE_MARATHON ]; then
   upload $MODULE_UPLOAD_FILE $MODULE_UPLOAD_PATH $MODULE_COMPILED_FILENAME
 else
   echo "== Marathon already installed, skipping. =="
+  if [ $FORCE_LINK == true ]; then
+    echo "== Force linking Marathon... =="
+    link
+  fi;
 fi
