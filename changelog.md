@@ -1,26 +1,6 @@
 # Changelog
 
 
-## Todo
-  * Hostname fails when using 13.04. Need to add 'dev.localdomain' entry in `/etc/hosts` file
-  * need to make sure export of mesos is /usr/local rather than /usr/local/bin
-  - add direct support for vagrant host
-    - add default domain, and option to specify manual
-      defaults:
-        - domain: example.com
-      - node:
-          fqdn: somehost.example.com
-          # OR
-          fqdn: ~ # empty entry, falls back on domain default (<name>.domain)
-  - SEE => https://github.com/everpeace/vagrant-mesos
-  - https://github.com/adrienthebo/vagrant-hosts
-  - https://github.com/fgrehm/vagrant-cachier
-  - PhantomJS
-  - Jasmine
-  - Guard::Jasmine
-  - Shipyard
-
-
 * v0.0.14 - "Shadow"
   - Update documentation
   - Add beginning of mesos-docker work
@@ -49,6 +29,33 @@
   - Fix chef roles to properly install dependencies: `role-cluster-node`, `role-dev-node`, `role-test`,
   - Remove un-necessary roles
   - Add `upload`, `safeCopy`, `safeSource`, `safeAction` functions to `lib_functions.sh`
+  - Created `mesos` node, and removed `node2` for now. Will bring it back later.
+
+
+## Todo
+  - mesos recipe
+    - generate conf file
+    - execute master or slave config
+  - Cookbook for every mesos, marathon, docker executor
+    - cookbook depends version for all
+    - standalone version for executor and marathon
+  - Hostname fails when using 13.04. Need to add 'dev.localdomain' entry in `/etc/hosts` file
+  - need to make sure export of mesos is /usr/local rather than /usr/local/bin
+  - add direct support for vagrant host
+    - add default domain, and option to specify manual
+      defaults:
+        - domain: example.com
+      - node:
+          fqdn: somehost.example.com
+          # OR
+          fqdn: ~ # empty entry, falls back on domain default (<name>.domain)
+  - SEE => https://github.com/everpeace/vagrant-mesos
+  - https://github.com/adrienthebo/vagrant-hosts
+  - https://github.com/fgrehm/vagrant-cachier
+  - PhantomJS
+  - Jasmine
+  - Guard::Jasmine
+  - Shipyard
 
 
 * v0.0.13 - "Starfleet Academy"

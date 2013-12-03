@@ -6,16 +6,7 @@
   },
   "description": "Test Role",
   "run_list": [
-    "recipe[apt::default]",
-    "recipe[rvm::vagrant]",
-    "recipe[rvm::system]",
-    "recipe[nodejs::install_from_binary]",
-    "recipe[nodejs::npm]",
-    "recipe[golang]",
-    "recipe[docker]",
-    "recipe[java::oracle]",
-    "recipe[scala]",
-    "recipe[maven]"
+    
   ],
   "env_run_lists" : {},
   "override_attributes": {

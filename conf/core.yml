@@ -216,6 +216,20 @@ nodes:  # node registry
   #     run_client: false
   #     chef_node: ~
 
+  # - node:
+  #     hostname: 'devstack'
+  #     box: 'devstack'
+  #     desc: 'devstack box to test and develop with'
+  #     cpus: 1
+  #     mem: 2048
+  #     ip: '10.10.10.12'
+  #     mac: '0800d2FF88F2'
+  #     url: 'ubuntu_13_04_lts.box'
+  #     init: 'init.sh'
+  #     roles: ~
+  #     run_client: false
+  #     chef_node: ~
+
   - node:
       hostname: 'chef'
       box: 'chef'
@@ -237,7 +251,7 @@ nodes:  # node registry
       desc: 'a primary node to be used by a cluster'
       cpus: 2
       mem: 768
-      ip: '10.10.10.12'
+      ip: '10.10.10.11'
       mac: '080027BE8715'
       url: 'docker-reference.box'
       init: 'init.sh'
@@ -247,31 +261,17 @@ nodes:  # node registry
       chef_node: chef
 
   - node:
-      hostname: 'node2'
-      box: 'node2'
-      desc: 'a secondary node to be used by a cluster'
+      hostname: 'mesos'
+      box: 'mesos'
+      desc: 'stand alone mesos, marathon box'
       cpus: 2
-      mem: 768
+      mem: 1024
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
       url: 'docker-reference.box'
       init: 'init.sh'
       roles:
         - 'role-cluster-node'
-      run_client: false
-      chef_node: chef
-
-  - node:
-      hostname: 'devstack'
-      box: 'devstack'
-      desc: 'devstack box to test and develop with'
-      cpus: 1
-      mem: 2048
-      ip: '10.10.10.11'
-      mac: '0800d2FF88F2'
-      url: 'ubuntu_13_04_lts.box'
-      init: 'init.sh'
-      roles: ~
       run_client: false
       chef_node: ~
 
@@ -286,7 +286,7 @@ nodes:  # node registry
       url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'role-test'
+        - 'role-test2'
       run_client: false
       chef_node: ~
 
@@ -294,6 +294,7 @@ nodes:  # node registry
 #
 # Unused MACs
 # ================
+#   0800d2FF88F2
 #   080027EB6B03
 #   02895C872CC5
 #   024E89B94036
