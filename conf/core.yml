@@ -5,11 +5,12 @@
 
 defaults: # default config
   debug: false
-  version: 'collective-v0.0.14'
+  version: 'collective-v0.0.15'
   vagrant_plugins:
     - 'vagrant-omnibus'
     - 'vagrant-hosts'
     - 'vagrant-cachier'
+    - 'vagrant-vbguest'
     # - 'vagrant-berkshelf'
   vm: 'dev'
   cluster: 'base'
