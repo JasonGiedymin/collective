@@ -1,5 +1,7 @@
 require 'colorize'
 
+import 'lib/system.rb'
+
 VagrantCommand = Struct.new(:task, :desc, :cmd, :fire_forget)
 
 # Simple custom commands here
@@ -18,13 +20,15 @@ VAGRANT_CMDS = [
 def vm_cmd(os, cmd, fire_forget=false)
   System.chdir("#{HOME}")
   vagrant_cmd = "vagrant #{cmd} #{os}"
-  puts "\n-> running command: [#{vagrant_cmd}]\n\n".underline
+  System.msgDebug "running command: [#{vagrant_cmd}], node:[#{os}]", os
 
   if (!fire_forget)
     if system vagrant_cmd
-      puts "  Vagrant command ran: [#{vagrant_cmd}]\n\n"
+      System.msgDebug "Vagrant command ran: [#{vagrant_cmd}]", os
     else
-        raise "\n!!!\n   Error trying to run vagrant command [#{vagrant_cmd}]\n!!!\n\n"
+      msg = "\n!!!\n   Error trying to run vagrant command [#{vagrant_cmd}]\n!!!\n\n"
+      System.msgError msg, os
+      raise msg
     end
   else
     system vagrant_cmd
@@ -47,9 +51,10 @@ namespace :vm do
 
         desc "#{command.desc} #{os}"
         task command.task do |t|
-          puts "-> running command:[#{command.task}] on node:[#{os}]".underline
           vm_cmd(os, command.cmd, command.fire_forget)
-          puts "\n== command:[#{command.task}] on node:[#{os}] complete ==".black.on_magenta
+          
+          msg = "\ncommand:[#{command.task}] on node:[#{os}] complete"
+          System.msgSuccess msg, os
 
           if(command.task == 'destroy')
             Rake::Task["vm:#{os}:cleanup"].invoke
@@ -60,9 +65,11 @@ namespace :vm do
 
       desc "Removes #{version}-#{os} from vagrant."
       task :cleanup do
-        puts "-> running command:[cleanup] on node:[#{os}]".underline
+        vagrant_home = Global::Settings.locations['vagrant_home']
+        box_loc = "#{vagrant_home}/boxes/#{version}-#{os}"
+        local_machine_loc = "#{HOME}/.vagrant/machines/#{os}"
+
         vm_cmd('virtualbox', "box remove #{version}-#{os}", true)
-        puts "\n== command:[cleanup] on node:[#{os}] complete ==".black.on_magenta
       end
 
       desc 'Rebirth does a force destroy followed by an up'
@@ -72,11 +79,42 @@ namespace :vm do
         Rake::Task["vm:#{os}:up"].invoke
       end
 
+      desc "Nukes vagrant files and cache"
+      task :nuke do
+        vagrant_home = Global::Settings.locations['vagrant_home']
+        box_loc = "#{vagrant_home}/boxes/#{version}-#{os}"
+        local_machine_loc = "#{HOME}/.vagrant/machines/#{os}"
+
+        Rake::Task["vm:#{os}:destroy"].invoke
+        Rake::Task["vm:#{os}:cleanup"].invoke
+
+        if Dir.exists?(box_loc)
+          FileUtils.rm_rf box_loc
+          System.msgInfo "* deleted vagrant box at vagrant user location: #{box_loc}", os
+        end
+
+        if Dir.exists?(local_machine_loc)
+          FileUtils.rm_rf local_machine_loc
+          System.msgInfo "* deleted vagrant box at vagrant local location: #{local_machine_loc}", os
+        end
+
+        System.msgSuccess "\n== command:[cleanup] on node:[#{os}] complete ==", os
+      end
+
       desc "Reboots the #{os} vm"
       task :reboot do
         Rake::Task["vm:#{os}:halt"].invoke
         Rake::Task["vm:#{os}:up"].invoke
         Rake::Task["vm:#{os}:provision"].invoke
+      end
+
+      desc "Export the #{os} vm"
+      task :export do
+        box_loc = Global::Settings.locations['base_boxes_export']
+        box_name = "#{version}-#{os}"
+        # puts "==> package --base '#{box_name}' --output '#{box_loc}/#{box_name}-export.box'".red
+        vm_cmd(os, "package --output '#{box_loc}/#{box_name}-export.box'", true)
+        # vm_cmd(os, "package", true) # super basic packaging, need to change this
       end
 
     end # end namespace os
@@ -106,7 +144,6 @@ namespace :vm do
   desc 'Cleanup up latest box'
   task :cleanup do
     vm_cmd('virtualbox', "box remove #{version}-#{default_vm}", true)
-    puts "== command:[cleanup] on node:[#{default_vm}] complete ==\n".black.on_magenta
   end
 
   desc 'Cleanup ALL nodes'
@@ -115,14 +152,16 @@ namespace :vm do
       os = entry['node']['hostname']
       Rake::Task["vm:#{os}:cleanup"].invoke
     end
-    puts "\n== cleanup on all nodes complete ==".black.on_light_magenta
+
+    msg = "\n== cleanup on all nodes complete =="
+    System.msgSuccess msg, os
   end
   
   desc 'Rebirth does a force destroy followed by an up'
   task :rebirth do
     Rake::Task["vm:destroy"].invoke
     Rake::Task["vm:cleanup"].invoke
-    puts "sleeping to let host system catchup"
+    System.msgDebug "sleeping to let host system catchup", "default"
     sleep(5)
     Rake::Task["vm:up"].invoke
   end
@@ -130,7 +169,7 @@ namespace :vm do
   desc 'Reboots a vm'
   task :reboot do
     Rake::Task["vm:halt"].invoke
-    puts "sleeping to let host system catchup"
+    System.msgDebug "sleeping to let host system catchup", "default"
     sleep(5)
     Rake::Task["vm:up"].invoke
   end
@@ -144,32 +183,33 @@ namespace :vm do
         desc 'Halt or shutdown cluster'
         task :halt do
           cluster_nodes.each do |os|
-            puts "\n== Powering down cluster:[#{cluster_name}], node:[#{os}] ==".light_red
+            System.msgInfo "\n== Powering down cluster:[#{cluster_name}], node:[#{os}] ==", os
             Rake::Task["vm:#{os}:halt"].invoke
           end
-          puts "\n== Cluster:[#{cluster_name}] down ==".black.on_light_red
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] down ==", "cluster"
         end
 
         desc 'Power up a cluster'
         task :up do
           cluster_nodes.each do |os|
-            puts "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] ==".green
+            System.msgInfo "\n== Powering up cluster:[#{cluster_name}], node:[#{os}] ==", os
             Rake::Task["vm:#{os}:up"].invoke
             Rake::Task["vm:#{os}:provision"].invoke # for good measure
           end
 
           Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke # for good measure
-          puts "\n== Cluster:[#{cluster_name}] up and running ==".black.on_green
+
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] up and running ==", "cluster"
         end
 
         desc 'Re-provisions a cluster'
         task :provision do
           cluster_nodes.each do |os|
-            puts "\n== Provisioning cluster:[#{cluster_name}], node:[#{os}] ==".cyan
+            System.msgInfo "\n== Provisioning cluster:[#{cluster_name}], node:[#{os}] ==", os
             Rake::Task["vm:#{os}:provision"].invoke
           end
 
-          puts "\n== Provisioning Cluster:[#{cluster_name}] complete ==".black.on_cyan
+           System.msgSuccess "\n== Provisioning Cluster:[#{cluster_name}] complete ==", "cluster"
 
           # prepare the cluster
           Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
@@ -178,19 +218,19 @@ namespace :vm do
         desc 'Rebirth an entire cluster'
         task :rebirth do
           cluster_nodes.each do |os|
-            puts "\n== Rebirthing cluster:[#{cluster_name}], node:[#{os}] ==".light_blue
+            System.msgInfo "\n== Rebirthing cluster:[#{cluster_name}], node:[#{os}] ==", os
             Rake::Task["vm:#{os}:rebirth"].invoke
           end
 
           # prepare the cluster
           Rake::Task["vm:cluster:#{cluster_name}:sync"].invoke
           
-          puts "\n== Rebirth complete for cluster:[#{cluster_name}] ==".white.on_light_blue
+          System.msgSuccess "\n== Rebirth complete for cluster:[#{cluster_name}] ==", "cluster"
         end
 
-        desc 'Sync a cluster by uploading and ping'
+        desc 'Sync a cluster by boostrapping, uploading and preparing'
         task :sync do
-          puts "Syncing cluster..."
+          System.msgInfo "Syncing cluster...", "cluster"
 
           # bootstrap the cluster (will also register node)
           # also creates client.rb and who knows what else
@@ -203,33 +243,52 @@ namespace :vm do
           # register the node with daemon mode and run chef-client
           Rake::Task["vm:cluster:#{cluster_name}:prepare"].invoke
 
-          puts "\n== Syncing cluster:[#{cluster_name}] complete ==".light_yellow
+          System.msgSuccess "\n== Syncing cluster:[#{cluster_name}] complete ==", "cluster"
         end
 
         desc 'Destroys an entire cluster and cleans up'
         task :destroy do
+          System.msgInfo "\n== Destroying cluster:[#{cluster_name}]", "cluster"
+
           cluster_nodes.each do |os|
-            puts "\n== Destroying cluster:[#{cluster_name}]".red
             Rake::Task["vm:#{os}:destroy"].invoke
             Rake::Task["vm:#{os}:cleanup"].invoke
-            puts "\n== Cluster:[#{cluster_name}] destroyed".white.on_red
           end
+
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] destroyed", "cluster"
+        end
+
+        desc 'Nuke an entire cluster and clean up'
+        task :nuke do
+          System.msgInfo "\n== Nukinging cluster:[#{cluster_name}]", "cluster"
+
+          cluster_nodes.each do |os|
+            Rake::Task["vm:#{os}:nuke"].invoke
+          end
+
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] nuked", "cluster"
         end
 
         desc 'Reboots an entire cluster'
         task :reboot do
+          System.msgInfo "\n== Rebooting cluster:[#{cluster_name}]", "cluster"
+
           cluster_nodes.each do |os|
-            puts "\n== Rebooting cluster:[#{cluster_name}]".light_yellow
             Rake::Task["vm:#{os}:reboot"].invoke
             Rake::Task["vm:#{os}:sync"].invoke
-            puts "\n== Cluster:[#{cluster_name}] rebooted".black.on_light_yellow
           end
+          
+          System.msgSucess "\n== Cluster:[#{cluster_name}] rebooted", "cluster"
         end
 
         desc 'Bootstraps the cluster with chef'
         task :bootstrap do
           chef_node = entry['cluster']['chef_node']
-          raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red if chef_node.nil?
+
+          if chef_node.nil?
+            System.msgError "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n", "cluster"
+            raise "\n!!!\n   Cannot find chef_node within cluster node!\n!!!\n\n".red
+          end
 
           bootstrap_nodes = entry['cluster']['bootstrap_nodes']
           nodes = Global::Settings.nodes
@@ -245,10 +304,10 @@ namespace :vm do
             command = "ssh #{chef_node} -c #{script}"
             vm_cmd('', command, true)
 
-            puts "\n== Bootstrapping cluster:[#{cluster_name}], node:[#{node}] complete =="
+            System.msgSuccess "\n== Bootstrapping cluster:[#{cluster_name}], node:[#{node}] complete ==", node
           end
 
-          puts "\n== Bootstrapping cluster:[#{cluster_name}] complete ==".light_yellow.on_light_blue
+          System.msgSuccess "\n== Bootstrapping cluster:[#{cluster_name}] complete ==", "cluster"
         end
 
         desc 'Prepare the cluster node with chef'
@@ -266,12 +325,13 @@ namespace :vm do
             node_box = nodes[nodes.index{ |x| x['node']['box'] == node }]['node']['ip']
             script = "\"sudo chef-client\"" # -d daemon mode has a memory leak
             command = "ssh #{node} -c #{script}"
+            puts "==> #{command}"
             vm_cmd('', command, true)
 
-            puts "\n== chef-client prepared on cluster:[#{cluster_name}], node:[#{node}] complete =="
+            System.msgSuccess "\n== chef-client prepared on cluster:[#{cluster_name}], node:[#{node}] complete ==", node
           end
 
-          puts "\n== Cluster:[#{cluster_name}] prepared ==".light_yellow.on_light_blue
+          System.msgSuccess "\n== Cluster:[#{cluster_name}] prepared ==", "cluster"
         end
 
         desc 'Uploads all recipes, roles, nodes, environments to the chef server'
@@ -296,7 +356,7 @@ namespace :vm do
             vm_cmd('', command, true)
           end
 
-          puts "\n== Uploading cluster:[#{cluster_name}], node:[#{chef_node}] complete ==".light_yellow.on_light_blue
+          System.msgSuccess "\n== Uploading cluster:[#{cluster_name}], node:[#{chef_node}] complete ==", chef_node
         end # end upload
 
       end # end curr cluster

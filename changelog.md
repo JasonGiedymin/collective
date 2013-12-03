@@ -1,6 +1,63 @@
 # Changelog
 
 
+* v0.0.14 - "Shadow"
+  - Update documentation
+  - Add beginning of mesos-docker work
+  - Remove legacy repos/cookbooks
+  - Add user `vagrant.d` box removal during `:cleanup`
+  - Add local `.vagrant` box removal during `:cleanup`
+  - Fix UI setting that allows vbox GUI to be shown
+  - Add `precise32` and `precise64` images from vagrantup (thus far the best images around)
+  - Add `vm:<name>:export` command that will vagrant export boxes
+  - Add `download:plugins` which will download and _install_ vagrant plugins (yeah seems confusing), will have to change this in the future.
+  - Add omnibus `:latest` definition to download latest chef
+  - Modify runlist in dev box to specify OracleJDK specific recipe
+  - Add reference docker boxes, see this [link](http://blog.phusion.nl/2013/11/08/docker-friendly-vagrant-boxes/)
+  - Add `growl` since long running jobs are so... long running
+  - Add direct support for `vagrant-cachier`, with autodetect and caching of `apt`, `npm`, `chef`, `gem`, and `rvm`
+  - Add `mesos` and `mesos-docker` to dev box via install script (do not use cookbook just yet). Install script can install from source if using the docker reference box, or via mesosphere script when using Ubuntu 13.04.
+  - Add expanded usage of growl notifications, allowing for warn, info, error, and success levels of messages
+  - Add debug level to `core.yml`, and add debug message function
+  - Add `vm:<name>:nuke` command to Nuke a vm which will clean up all vagrant related files
+  - Add `cluster:<name>:nuke` command to run `nuke` for an entire cluster
+  - Add `install_mesos.sh` to install mesos from source or deb package
+  - Add `install_marathon.sh` to install mesos marathon from source or jar package
+  - Add `install_mesos_docker.sh` to install mesos docker executor from source
+  - Add `install_collective.sh` to install mesos, marathon, and mesos-docker
+  - Add `mesos-deb-packaging` to repos
+  - Fix chef roles to properly install dependencies: `role-cluster-node`, `role-dev-node`, `role-test`,
+  - Remove un-necessary roles
+  - Add `upload`, `safeCopy`, `safeSource`, `safeAction` functions to `lib_functions.sh`
+  - Created `mesos` node, and removed `node2` for now. Will bring it back later.
+
+
+## Todo
+  - mesos recipe
+    - generate conf file
+    - execute master or slave config
+  - Cookbook for every mesos, marathon, docker executor
+    - cookbook depends version for all
+    - standalone version for executor and marathon
+  - Hostname fails when using 13.04. Need to add 'dev.localdomain' entry in `/etc/hosts` file
+  - need to make sure export of mesos is /usr/local rather than /usr/local/bin
+  - add direct support for vagrant host
+    - add default domain, and option to specify manual
+      defaults:
+        - domain: example.com
+      - node:
+          fqdn: somehost.example.com
+          # OR
+          fqdn: ~ # empty entry, falls back on domain default (<name>.domain)
+  - SEE => https://github.com/everpeace/vagrant-mesos
+  - https://github.com/adrienthebo/vagrant-hosts
+  - https://github.com/fgrehm/vagrant-cachier
+  - PhantomJS
+  - Jasmine
+  - Guard::Jasmine
+  - Shipyard
+
+
 * v0.0.13 - "Starfleet Academy"
   - Modify vagrant chef logging mode to debug
   - Remove legacy `roles` dir
@@ -8,7 +65,7 @@
   - Add `run_docker_registry.sh` script that will safely determine if it should bootstrap
     a new `docker-registry` by checking if it is already running
   - Add `docker` recipe to `chefzero` role, and bootstrap `docker-registry` on
-    chefzero nodes (specificaly `10.10.10.10`). You may need to run
+    chefzero nodes (specifically `10.10.10.10`). You may need to run
     `vm:cluster:<name>:provision` if you've ran `up` on a cluster that was
     already created and was only cycled. Fixes #24.
   - Start of work dealing with 'unmanaged' clusters, however this feature is deferred ftm.

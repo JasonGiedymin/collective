@@ -1,0 +1,62 @@
+{
+  "name": "role-cluster-node",
+  "chef_type": "role",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "description": "Base Cluster Node Role",
+  "run_list": [
+    "recipe[apt::default]",
+    "recipe[rvm::vagrant]",
+    "recipe[rvm::system]",
+    "recipe[nodejs::install_from_binary]",
+    "recipe[nodejs::npm]",
+    "recipe[golang]",
+    "recipe[docker]",
+    "recipe[java::oracle]",
+    "recipe[scala]",
+    "recipe[maven]"
+  ],
+  "env_run_lists" : {},
+  "override_attributes": {
+    "rvm": {
+      "rubies": [
+        "1.9.3"
+      ],
+      "default_ruby": "ruby-1.9.3",
+      "user_default_ruby": "ruby-1.9.3",
+      "gems":{
+        "1.9.3":[
+          {"name": "fpm"}
+        ]
+      },
+      "vagrant" : {
+        "system_chef_solo" : "/opt/chef/bin/chef-solo",
+        "system_chef_client" : "/opt/chef/bin/chef-client"
+      }
+    },
+    
+    "java": {
+      "install_flavor": "oracle",
+      "oracle": {
+        "accept_oracle_download_terms": true
+      },
+      "jdk_version": "7"
+    },
+
+    "maven": {
+      "setup_bin": true,
+      "m2_home": "/usr/bin/maven",
+      "version": "3",
+      "3": {
+        "url": "http://mirror.reverse.net/pub/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+      }
+    },
+
+    "scala": {
+      "version": "2.10.3",
+      "url": "http://www.scala-lang.org/files/archive/scala-2.10.3.tgz"
+    }
+
+  }
+}

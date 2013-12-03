@@ -4,7 +4,13 @@
 #
 
 defaults: # default config
-  version: 'collective-v0.0.13'
+  debug: false
+  version: 'collective-v0.0.14'
+  vagrant_plugins:
+    - 'vagrant-omnibus'
+    - 'vagrant-hosts'
+    - 'vagrant-cachier'
+    # - 'vagrant-berkshelf'
   vm: 'dev'
   cluster: 'base'
   ui: false
@@ -18,7 +24,9 @@ defaults: # default config
 #
 
 locations:
+  vagrant_home: '~/.vagrant.d'
   base_boxes: 'base_boxes'
+  base_boxes_export: '/Volumes/jason_storage/ISOs/'
   init_scripts: 'manifests/init_scripts'
   downloads: 'manifests/downloads'
   repos: 'manifests/repos'
@@ -38,7 +46,12 @@ downloads:
   files:
     - file:
       name: 'ubuntu_12_04_lts.box'
-      url: 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
+      url: 'http://hc-vagrant-files.s3.amazonaws.com/precise64.box'
+      location: 'base_boxes'
+      track: false
+    - file:
+      name: 'ubuntu_13_04_lts.box'
+      url: 'http://cloud-images.ubuntu.com/vagrant/raring/current/raring-server-cloudimg-amd64-vagrant-disk1.box'
       location: 'base_boxes'
       track: false
     - file:
@@ -47,8 +60,23 @@ downloads:
       location: 'base_boxes'
       track: false
     - file:
+      name: 'docker-reference.box'
+      url: 'https://oss-binaries.phusionpassenger.com/vagrant/boxes/ubuntu-12.04.3-amd64-vbox.box'
+      location: 'base_boxes'
+      track: false
+    - file:
       name: 'chefserver.deb'
       url: 'https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.8-1.ubuntu.12.04_amd64.deb'
+      location: 'downloads'
+      track: false
+    - file:
+      name: 'mesos_14_64.deb'
+      url: 'http://downloads.mesosphere.io/master/ubuntu/13.04/mesos_0.14.2_amd64.deb'
+      location: 'downloads'
+      track: false
+    - file:
+      name: 'marathon.conf'
+      url: 'http://downloads.mesosphere.io/marathon/marathon.conf'
       location: 'downloads'
       track: false
 
@@ -62,47 +90,59 @@ downloads:
 # ./chef-server/cookbooks       # cookbooks for chef-server, NOT TO BE USED BY VAGRANT
 repos:
   - repo:
-    name: 'bind'
-    url: 'https://github.com/atomic-penguin/cookbook-bind.git'
-    tag: ''
-    post_install: ''
-    location: 'cookbooks'
-  - repo:
-    name: 'git'
-    url: 'https://github.com/opscode-cookbooks/git.git'
-    tag: 'v2.7.0'
-    post_install: ''
-    location: 'cookbooks'
-  - repo:
     name: 'devstack'
     url: 'https://github.com/openstack-dev/devstack.git'
     tag: ''
     post_install: ''
     location: ''
   - repo:
-    name: 'chef-client'
-    url: 'https://github.com/opscode-cookbooks/chef-client.git'
+    name: 'mesos-docker'
+    url: 'https://github.com/mesosphere/mesos-docker.git'
     tag: ''
     post_install: ''
-    location: 'cookbooks'
+    location: ''
   - repo:
-    name: 'chef-server'
-    url: 'https://github.com/JasonGiedymin/chef-server.git'
-    tag: 'v2.0.1'
-    post_install: ''
-    location: 'cookbooks'
-  - repo:
-    name: 'rvm'
-    url: 'https://github.com/fnichol/chef-rvm.git'
+    name: 'mesos-deb-packaging'
+    url: 'https://github.com/deric/mesos-deb-packaging.git'
     tag: ''
     post_install: ''
-    location: 'cookbooks'
-  - repo:
-    name: 'java'
-    url: 'https://github.com/opscode-cookbooks/java.git'
-    tag: ''
-    post_install: ''
-    location: 'cookbooks'
+    location: ''
+  # - repo:
+  #   name: 'bind'
+  #   url: 'https://github.com/atomic-penguin/cookbook-bind.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'git'
+  #   url: 'https://github.com/opscode-cookbooks/git.git'
+  #   tag: 'v2.7.0'
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'chef-client'
+  #   url: 'https://github.com/opscode-cookbooks/chef-client.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'chef-server'
+  #   url: 'https://github.com/JasonGiedymin/chef-server.git'
+  #   tag: 'v2.0.1'
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'rvm'
+  #   url: 'https://github.com/fnichol/chef-rvm.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'java'
+  #   url: 'https://github.com/opscode-cookbooks/java.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
 
 
 
@@ -176,6 +216,20 @@ nodes:  # node registry
   #     run_client: false
   #     chef_node: ~
 
+  # - node:
+  #     hostname: 'devstack'
+  #     box: 'devstack'
+  #     desc: 'devstack box to test and develop with'
+  #     cpus: 1
+  #     mem: 2048
+  #     ip: '10.10.10.12'
+  #     mac: '0800d2FF88F2'
+  #     url: 'ubuntu_13_04_lts.box'
+  #     init: 'init.sh'
+  #     roles: ~
+  #     run_client: false
+  #     chef_node: ~
+
   - node:
       hostname: 'chef'
       box: 'chef'
@@ -195,44 +249,29 @@ nodes:  # node registry
       hostname: 'node1'
       box: 'node1'
       desc: 'a primary node to be used by a cluster'
-      cpus: 1
-      mem: 256
-      ip: '10.10.10.12'
+      cpus: 2
+      mem: 768
+      ip: '10.10.10.11'
       mac: '080027BE8715'
-      url: 'ubuntu_12_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'cluster-node'
-        - 'role-runtimes'
+        - 'role-cluster-node'
       run_client: false
       chef_node: chef
 
   - node:
-      hostname: 'node2'
-      box: 'node2'
-      desc: 'a secondary node to be used by a cluster'
-      cpus: 1
-      mem: 256
+      hostname: 'mesos'
+      box: 'mesos'
+      desc: 'stand alone mesos, marathon box'
+      cpus: 2
+      mem: 1024
       ip: '10.10.10.13'
       mac: '02EECB9EC1ED'
-      url: 'ubuntu_12_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'role-runtimes'
-      run_client: false
-      chef_node: chef
-
-  - node:
-      hostname: 'devstack'
-      box: 'devstack'
-      desc: 'devstack box to test and develop with'
-      cpus: 1
-      mem: 2048
-      ip: '10.10.10.11'
-      mac: '0800d2FF88F2'
-      url: 'ubuntu_13_04_lts.box'
-      init: 'init.sh'
-      roles: ~
+        - 'role-cluster-node'
       run_client: false
       chef_node: ~
 
@@ -240,14 +279,14 @@ nodes:  # node registry
       hostname: 'dev'
       box: 'dev'
       desc: 'develop on this box, it will not be bootstrapped by any [IPS]asS'
-      cpus: 2
+      cpus: 3
       mem: 1024
       ip: '10.10.10.14'
       mac: '02D7DAEB3F8C'
-      url: 'ubuntu_12_04_lts.box'
+      url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'role-dev-node'
+        - 'role-test2'
       run_client: false
       chef_node: ~
 
@@ -255,12 +294,13 @@ nodes:  # node registry
 #
 # Unused MACs
 # ================
+#   0800d2FF88F2
 #   080027EB6B03
 #   02895C872CC5
 #   024E89B94036
 #   0253943912A9
 #   0277E25CD585
 #   025EDFE84F7F
-#   02882CFDC8F
+#   02882CFDC8F3
 #   0269347FC4C6
 #

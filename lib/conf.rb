@@ -68,3 +68,12 @@ module ConfigCheck
     self.simpleTest('ui')
   end
 end
+
+module Conversions
+  def self.Boolean(string)
+    return true if string== true || string =~ (/(true|t|yes|y|1)$/i)
+    return false if string== false || string.nil? || string =~ (/(false|f|no|n|0)$/i)
+    raise ArgumentError.new("invalid value for Boolean: #{string}").red
+  end
+end
+

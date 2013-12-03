@@ -15,6 +15,7 @@ installRegistry() {
 }
 
 # Only install if it doesn't exist
+sleep 20s # wait 10s for registry to run
 STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://10.10.10.10:5000/v1/_ping)
 if [ $STATUS != 200 ]; then
   installRegistry
