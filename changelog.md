@@ -1,7 +1,15 @@
 # Changelog
 
 
+Dockside
+---------
+yard file (describing the containers)
+spreader (engine that runs the runlist)
+crane (the executor of the dockerfile)
+
+
 * v0.0.15 - "Vertical Velocity"
+  - clean up `core.yml`
   - 
 
 

@@ -14,7 +14,9 @@ cookbook 'build-essential'
 cookbook 'lxc', git: "https://github.com/hw-cookbooks/lxc.git"
 cookbook 'docker', git: 'https://github.com/bflad/chef-docker.git'
 cookbook 'etcd', git: 'https://github.com/spheromak/etcd-cookbook.git'
-cookbook 'mesos', git: 'https://github.com/everpeace/cookbook-mesos.git'
+# cookbook 'mesos', git: 'https://github.com/everpeace/cookbook-mesos.git'
+cookbook 'chef-mesos', git: 'https://github.com/JasonGiedymin/chef-mesos.git'
+cookbook 'chef-marathon', git: 'https://github.com/JasonGiedymin/chef-marathon.git'
 
 
 cookbook 'ruby_build'

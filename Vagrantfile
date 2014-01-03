@@ -1,9 +1,6 @@
 #
 # Vagrantfile
 #
-# Notice how lean this file is. Any injection other than init should be
-# done at a higher level.
-#
 
 HOME = File.dirname(__FILE__)
 
@@ -73,17 +70,6 @@ Vagrant.configure('2') do |config|
           end
         end
       end # end chef_solo
-
-      # # Chef Client # Disabled but left for posperity
-      # if node['run_client']?
-      #   config.vm.provision "chef_client" do |chef|
-      #     # first check if node is set for using chef client
-      #       chef.chef_server_url = "https://10.10.10.10/"
-      #       chef.node_name = node['hostname']
-      #       chef.validation_client_name = universal_node_name
-      #       chef.validation_key_path = "#{chef_client_keys}/#{universal_node_pem}"
-      #   end
-      # end
 
       # Init
       instance.vm.provision :shell, path: "#{init_script_loc}/#{node['hostname']}/#{node['init']}"

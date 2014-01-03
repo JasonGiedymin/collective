@@ -108,43 +108,6 @@ repos:
     tag: ''
     post_install: ''
     location: ''
-  # - repo:
-  #   name: 'bind'
-  #   url: 'https://github.com/atomic-penguin/cookbook-bind.git'
-  #   tag: ''
-  #   post_install: ''
-  #   location: 'cookbooks'
-  # - repo:
-  #   name: 'git'
-  #   url: 'https://github.com/opscode-cookbooks/git.git'
-  #   tag: 'v2.7.0'
-  #   post_install: ''
-  #   location: 'cookbooks'
-  # - repo:
-  #   name: 'chef-client'
-  #   url: 'https://github.com/opscode-cookbooks/chef-client.git'
-  #   tag: ''
-  #   post_install: ''
-  #   location: 'cookbooks'
-  # - repo:
-  #   name: 'chef-server'
-  #   url: 'https://github.com/JasonGiedymin/chef-server.git'
-  #   tag: 'v2.0.1'
-  #   post_install: ''
-  #   location: 'cookbooks'
-  # - repo:
-  #   name: 'rvm'
-  #   url: 'https://github.com/fnichol/chef-rvm.git'
-  #   tag: ''
-  #   post_install: ''
-  #   location: 'cookbooks'
-  # - repo:
-  #   name: 'java'
-  #   url: 'https://github.com/opscode-cookbooks/java.git'
-  #   tag: ''
-  #   post_install: ''
-  #   location: 'cookbooks'
-
 
 
 #
@@ -166,18 +129,7 @@ clusters: # cluster config
       chef_node: 'chef'
       user: 'vagrant'
       pass: 'vagrant'
-  # - cluster:
-  #     name: 'jnet'
-  #     managed: false
-  #     nodes: # nodes that make up the cluster
-  #       - 'jnode1' # nodes first
-  #     bootstrap_nodes: # specific nodes to bootstrap
-  #       - 'jnode1'
-  #     chef_node: 'chef'
-  #     user: ~ # ignored under unmanaged
-  #     pass: ~ # ignored under unmanaged
-  #     user_pass_env: 'JNETACCESS' #used as '$JNETACCESS_[USER|PASS]'
-        
+
 
 #
 # Node Settings
@@ -186,50 +138,20 @@ clusters: # cluster config
 #       to be present
 
 nodes:  # node registry
-  # - node:
-  #     hostname: 'dns'
-  #     box: 'dns'
-  #     desc: 'NET layer DNS server'
-  #     cpus: 1
-  #     mem: 256
-  #     ip: '10.10.10.01'
-  #     mac: '02895C872CC5'
-  #     url: 'ubuntu_12_04_lts.box'
-  #     init: 'init.sh'
-  #     roles:
-  #       - 'role-bind9'
-  #     run_client: false
-  #     chef_node: ~
 
-  # Out of commission for now
-  # - node:
-  #     hostname: 'chef'
-  #     box: 'chef'
-  #     desc: 'NET layer chef server that can bootstrap ANY node or cluster'
-  #     cpus: 1 # more than 1 cpu fails vagrant, sigh...
-  #     mem: 512
-  #     ip: '10.10.10.15'
-  #     mac: '080027EB6B03'
-  #     url: 'ubuntu_12_04_lts.box'
-  #     init: 'init.sh'
-  #     roles:
-  #       - 'role-runtimes'
-  #     run_client: false
-  #     chef_node: ~
-
-  # - node:
-  #     hostname: 'devstack'
-  #     box: 'devstack'
-  #     desc: 'devstack box to test and develop with'
-  #     cpus: 1
-  #     mem: 2048
-  #     ip: '10.10.10.12'
-  #     mac: '0800d2FF88F2'
-  #     url: 'ubuntu_13_04_lts.box'
-  #     init: 'init.sh'
-  #     roles: ~
-  #     run_client: false
-  #     chef_node: ~
+  - node:
+      hostname: 'devstack'
+      box: 'devstack'
+      desc: 'devstack box to test and develop with'
+      cpus: 1
+      mem: 2048
+      ip: '10.10.10.12'
+      mac: '0800d2FF88F2'
+      url: 'ubuntu_13_04_lts.box'
+      init: 'init.sh'
+      roles: ~
+      run_client: false
+      chef_node: ~
 
   - node:
       hostname: 'chef'
@@ -287,7 +209,7 @@ nodes:  # node registry
       url: 'docker-reference.box'
       init: 'init.sh'
       roles:
-        - 'role-test2'
+        - 'role-cluster-node'
       run_client: false
       chef_node: ~
 
@@ -295,7 +217,6 @@ nodes:  # node registry
 #
 # Unused MACs
 # ================
-#   0800d2FF88F2
 #   080027EB6B03
 #   02895C872CC5
 #   024E89B94036
@@ -305,3 +226,77 @@ nodes:  # node registry
 #   02882CFDC8F3
 #   0269347FC4C6
 #
+
+
+# -------------------------------------------------------------------
+#                           CONFIGURATION                           #
+#                                PIT                                #
+# -------------------------------------------------------------------
+
+  # - cluster:
+  #     name: 'jnet'
+  #     managed: false
+  #     nodes: # nodes that make up the cluster
+  #       - 'jnode1' # nodes first
+  #     bootstrap_nodes: # specific nodes to bootstrap
+  #       - 'jnode1'
+  #     chef_node: 'chef'
+  #     user: ~ # ignored under unmanaged
+  #     pass: ~ # ignored under unmanaged
+  #     user_pass_env: 'JNETACCESS' #used as '$JNETACCESS_[USER|PASS]'
+        
+
+
+# Out of commission for now
+  # - node:
+  #     hostname: 'chef'
+  #     box: 'chef'
+  #     desc: 'NET layer chef server that can bootstrap ANY node or cluster'
+  #     cpus: 1 # more than 1 cpu fails vagrant, sigh...
+  #     mem: 512
+  #     ip: '10.10.10.15'
+  #     mac: '080027EB6B03'
+  #     url: 'ubuntu_12_04_lts.box'
+  #     init: 'init.sh'
+  #     roles:
+  #       - 'role-runtimes'
+  #     run_client: false
+  #     chef_node: ~
+
+
+    # - repo:
+  #   name: 'bind'
+  #   url: 'https://github.com/atomic-penguin/cookbook-bind.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'git'
+  #   url: 'https://github.com/opscode-cookbooks/git.git'
+  #   tag: 'v2.7.0'
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'chef-client'
+  #   url: 'https://github.com/opscode-cookbooks/chef-client.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'chef-server'
+  #   url: 'https://github.com/JasonGiedymin/chef-server.git'
+  #   tag: 'v2.0.1'
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'rvm'
+  #   url: 'https://github.com/fnichol/chef-rvm.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
+  # - repo:
+  #   name: 'java'
+  #   url: 'https://github.com/opscode-cookbooks/java.git'
+  #   tag: ''
+  #   post_install: ''
+  #   location: 'cookbooks'
