@@ -15,7 +15,11 @@
     "recipe[docker]",
     "recipe[java::oracle]",
     "recipe[scala]",
-    "recipe[maven]"
+    "recipe[maven]",
+    "recipe[chef-mesos::default]",
+    "recipe[chef-mesos::templates]",
+    "recipe[chef-mesos::start_services]",
+    "recipe[chef-marathon::default]"
   ],
   "env_run_lists" : {},
   "override_attributes": {
